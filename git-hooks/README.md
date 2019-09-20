@@ -13,3 +13,6 @@ https://www.atlassian.com/git/tutorials/git-hooks
 | push/0   | pre-receive        | remote |                                                              |        |
 | push/1   | update             | remote |                                                              |        |
 | push/2   | post-receive       | remote |                                                              |        |
+
+## pre-commit
+[https://codeinthehole.com/tips/tips-for-using-a-git-pre-commit-hook/](https://codeinthehole.com/tips/tips-for-using-a-git-pre-commit-hook/)
