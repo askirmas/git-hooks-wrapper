@@ -4,8 +4,6 @@ STASH_NAME="pre-commit.$(date +%F.%T)"
 git stash push -q --keep-index --include-untracked -m $STASH_NAME
 STASH_TITLE="On $(git rev-parse --abbrev-ref HEAD): ${STASH_NAME}"
 
-
-
 ./test.sh
 RESULT=$?
 
