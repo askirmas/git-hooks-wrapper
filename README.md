@@ -19,3 +19,7 @@ https://www.atlassian.com/git/tutorials/git-hooks
 ## pre-commit
 
 [https://codeinthehole.com/tips/tips-for-using-a-git-pre-commit-hook/](https://codeinthehole.com/tips/tips-for-using-a-git-pre-commit-hook/)
+
+## Note
+
+https://github.com/typicode/husky
