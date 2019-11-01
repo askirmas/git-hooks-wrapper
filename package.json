@@ -1,6 +1,6 @@
 {
   "name": "git-shell-scripts",
-  "version": "1.0.2.1",
+  "version": "1.0.1",
   "private": false,
   "description": "Wrapper scripts",
   "bin": "hooks.sh",
