@@ -4,8 +4,7 @@
   "private": false,
   "description": "Wrapper scripts",
   "bin": "hooks.sh",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "np": "^5.1.2"
   },
@@ -32,8 +31,12 @@
     "access": "public"
   },
   "keywords": [
-    "git", "hooks", "git-hooks",
-    "commit", "pre-commit", "precommit"
+    "git",
+    "hooks",
+    "git-hooks",
+    "commit",
+    "pre-commit",
+    "precommit"
   ],
   "files": [
     "README.md",
