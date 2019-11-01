@@ -1,6 +1,8 @@
+# Git Scripts
 
+Wrapper scripts
 
-# Desc
+## Docs
 
 https://www.atlassian.com/git/tutorials/git-hooks
 
@@ -15,4 +17,5 @@ https://www.atlassian.com/git/tutorials/git-hooks
 | push/2   | post-receive       | remote |                                                              |        |
 
 ## pre-commit
+
 [https://codeinthehole.com/tips/tips-for-using-a-git-pre-commit-hook/](https://codeinthehole.com/tips/tips-for-using-a-git-pre-commit-hook/)
