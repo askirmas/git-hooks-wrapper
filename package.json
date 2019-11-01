@@ -1,11 +1,10 @@
 {
   "name": "git-scripts",
   "version": "0.1.0",
-  "description": "",
-
-  "bin": "hooks.sh",
+  "description": "Wrapper scripts for git hooks and couple more",
+  "bin": "./hooks.sh",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No test specified\" && exit 0"
   },
   "repository": {
     "type": "git",
@@ -20,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/askirmas/git-scripts/issues"
   },
-  "homepage": "https://github.com/askirmas/git-scripts#readme"
+  "homepage": "https://github.com/askirmas/git-scripts#readme",
+  "devDependencies": {
+    "np": "^5.1.2"
+  }
 }
