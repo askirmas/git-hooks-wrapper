@@ -22,5 +22,12 @@
   "homepage": "https://github.com/askirmas/git-scripts#readme",
   "devDependencies": {
     "np": "^5.1.2"
-  }
+  },
+  "keywords": [
+    "git hooks",
+    "git-hooks",
+    "git/hooks",
+    "pre-commit",
+    "precommit"
+  ]
 }
