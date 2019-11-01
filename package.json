@@ -1,33 +1,23 @@
 {
-  "name": "git-scripts",
-  "version": "0.1.0",
-  "description": "Wrapper scripts for git hooks and couple more",
-  "bin": "./hooks.sh",
+  "name": "git-shells",
+  "version": "1.0.0",
+  "description": "Wrapper scripts",
+  "main": "index.js",
+  "dependencies": {
+    "np": "^5.1.2"
+  },
+  "devDependencies": {},
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/askirmas/git-scripts.git"
+    "url": "git+ssh://git@github.com/askirmas/git-scripts.git"
   },
-  "author": {
-    "email": "kirmas@phystech.edu",
-    "name": "Andrii Kirmas",
-    "url": "http://about.me/kirmas"
-  },
-  "license": "MIT",
+  "author": "",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/askirmas/git-scripts/issues"
   },
-  "homepage": "https://github.com/askirmas/git-scripts#readme",
-  "devDependencies": {
-    "np": "^5.1.2"
-  },
-  "keywords": [
-    "git hooks",
-    "git-hooks",
-    "git/hooks",
-    "pre-commit",
-    "precommit"
-  ]
+  "homepage": "https://github.com/askirmas/git-scripts#readme"
 }
