@@ -23,5 +23,9 @@
   "homepage": "https://github.com/askirmas/git-scripts#readme",
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "keywords": [
+    "git", "hooks", "git-hooks",
+    "commit", "pre-commit", "precommit"
+  ]
 }
