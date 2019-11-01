@@ -34,5 +34,11 @@
   "keywords": [
     "git", "hooks", "git-hooks",
     "commit", "pre-commit", "precommit"
+  ],
+  "files": [
+    "README.md",
+    "hooks.sh",
+    "hooks/*",
+    "scripts/*"
   ]
 }
