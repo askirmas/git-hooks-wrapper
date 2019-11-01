@@ -1,22 +1,28 @@
 {
   "name": "git-shells",
-  "version": "1.0.2",
+  "version": "1.0.2.1",
   "private": false,
   "description": "Wrapper scripts",
   "main": "index.js",
   "dependencies": {
+  },
+  "devDependencies": {
     "np": "^5.1.2"
   },
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "publish": "np"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/askirmas/git-scripts.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": {
+    "email": "kirmas@phystech.edu",
+    "name": "Andrii Kirmas",
+    "url": "https://about.me/kirmas"
+  },
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/askirmas/git-scripts/issues"
   },
