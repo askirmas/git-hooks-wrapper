@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SOURCE_DIR=git-hooks
+HOOKS_DIR=$(cat $MY_DIR/hooks_dir)
 
 # TODO: Add on SIGTERM
 
@@ -8,7 +8,7 @@ STASH_NAME="pre-commit.$(date +%F.%T)"
 git stash push -q --keep-index --include-untracked -m $STASH_NAME
 STASH_TITLE="On $(git rev-parse --abbrev-ref HEAD): ${STASH_NAME}"
 
-./$SOURCE_DIR/pre-commit
+./$HOOKS_DIR/pre-commit
 
 RESULT=$?
 
