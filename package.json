@@ -1,6 +1,7 @@
 {
   "name": "git-shells",
   "version": "1.0.1",
+  "private": false,
   "description": "Wrapper scripts",
   "main": "index.js",
   "dependencies": {
@@ -19,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/askirmas/git-scripts/issues"
   },
-  "homepage": "https://github.com/askirmas/git-scripts#readme"
+  "homepage": "https://github.com/askirmas/git-scripts#readme",
+  "publishConfig": {
+    "access": "public"
+  }
 }
