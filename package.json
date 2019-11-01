@@ -1,0 +1,24 @@
+{
+  "name": "git-scripts",
+  "version": "0.1.0",
+  "description": "",
+
+  "bin": "hooks.sh",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/askirmas/git-scripts.git"
+  },
+  "author": {
+    "email": "kirmas@phystech.edu",
+    "name": "Andrii Kirmas",
+    "url": "http://about.me/kirmas"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/askirmas/git-scripts/issues"
+  },
+  "homepage": "https://github.com/askirmas/git-scripts#readme"
+}
