@@ -1,8 +1,8 @@
 {
-  "name": "git-shell-scripts",
+  "name": "git-hooks-wrapper",
   "version": "0.1.1",
   "private": false,
-  "description": "Wrapper scripts",
+  "description": "Wrapper scripts for Git Hooks",
   "bin": "./hooks.sh",
   "dependencies": {},
   "devDependencies": {
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/askirmas/git-shell-scripts.git"
+    "url": "git+ssh://git@github.com/askirmas/git-hooks-wrapper.git"
   },
   "author": {
     "email": "kirmas@phystech.edu",
@@ -25,9 +25,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/askirmas/git-shell-scripts/issues"
+    "url": "https://github.com/askirmas/git-hooks-wrapper/issues"
   },
-  "homepage": "https://github.com/askirmas/git-shell-scripts#readme",
+  "homepage": "https://github.com/askirmas/git-hooks-wrapper#readme",
   "publishConfig": {
     "access": "public"
   },
