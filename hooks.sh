@@ -1,5 +1,5 @@
-#/bin/bash
-MY_DIR=$(dirname ${BASH_SOURCE[0]})
+#!/bin/sh
+MY_DIR=$(dirname "$(realpath "$0")")
 
 case "$1" in
   --pre-commit)

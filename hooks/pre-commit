@@ -1,5 +1,5 @@
 #!/bin/bash
-MY_DIR=$(dirname ${BASH_SOURCE[0]})
+MY_DIR=$(dirname "$(realpath "$0")")
 HOOKS_DIR=$(cat $MY_DIR/hooks_dir)
 HOOK="$HOOKS_DIR/pre-commit"
 test -e $HOOK || (echo "No pre-commit hook - skipped" && exit 0);
