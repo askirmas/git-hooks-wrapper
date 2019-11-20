@@ -2,9 +2,11 @@
 MY_DIR=$(dirname "$(realpath "$0")")
 HOOKS_DIR=$(cat $MY_DIR/hooks_dir)
 HOOK="$HOOKS_DIR/pre-commit"
-if [ ! $(test -e $HOOK) ]
+
+test -e $HOOK
+if [ $? -ne 0 ]
 then
- echo "No pre-commit hook - skipped";
+ echo "No pre-commit hook '$HOOK'- skipped";
  exit 0;
 fi
 
