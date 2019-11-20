@@ -1,10 +1,16 @@
 #!/bin/bash
 MY_DIR=$(dirname ${BASH_SOURCE[0]})
 
-GIT_PATH=$(git config --local --get core.hookPath || echo ".git/hooks")
+if [ -z "$1" ]
+then
+  HOOKS_PATH=$(git config --local --get core.hookPath || echo "./git-hooks")
+else
+  HOOKS_PATH=$1
+fi
 
-test -e $GIT_PATH/pre-commit || ln -s $GIT_PATH/pre-commit $MY_DIR/pre-commit 
+echo $HOOKS_PATH > "$MY_DIR/hooks_dir"
 
-HOOKS_DIR=$(cat $MY_DIR/hooks_dir)
+git config --local core.hookPath $MY_DIR
 
-test -d $HOOKS_DIR || mkdir $HOOKS_DIR
+echo "Wrapper git-hooks in $HOOKS_PATH"
+exit 0;

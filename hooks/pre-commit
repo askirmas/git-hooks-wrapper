@@ -1,28 +1,31 @@
-#!/bin/sh
-
+#!/bin/bash
+MY_DIR=$(dirname ${BASH_SOURCE[0]})
 HOOKS_DIR=$(cat $MY_DIR/hooks_dir)
+HOOK="$HOOKS_DIR/pre-commit"
+test -e $HOOK || (echo "No pre-commit hook - skipped" && exit 0);
 
 # TODO: Add on SIGTERM
 
 STASH_NAME="pre-commit.$(date +%F.%T)"
+# TODO: Recursive for submodules
 git stash push -q --keep-index --include-untracked -m $STASH_NAME
 STASH_TITLE="On $(git rev-parse --abbrev-ref HEAD): ${STASH_NAME}"
 
-./$HOOKS_DIR/pre-commit
+$HOOK
 
 RESULT=$?
 
-# I.E. during tests updated snapshots can be produced and they are tracked
+# During tests updated snapshots can be produced and track it in your pre-commit hook with something like
 # git add -n? -f? --all 
 
 STASH_LAST=$(git stash list -1 --pretty=%B)
 
 if [ "$STASH_LAST" = "$STASH_TITLE" ]
 then
-    # Deleted files afterwards are in index as untracked
+    # TODO: Deleted files afterwards are somehow in index as untracked
     git stash pop -q
 else
-    echo Last stash is not mine
+    echo Last stash is not mine!
 fi
 
 exit $RESULT

@@ -1,11 +1,12 @@
-#/bin/sh
+#/bin/bash
+MY_DIR=$(dirname ${BASH_SOURCE[0]})
 
 case "$1" in
   --pre-commit)
-    hooks/pre-commit
+    $MY_DIR/hooks/pre-commit
   ;;
   *)
-    hooks/init.sh
+    $MY_DIR/hooks/init.sh "$@"
   ;;
 esac
 exit $?
