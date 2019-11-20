@@ -2,6 +2,12 @@
 
 Wrapper scripts
 
+[npm](https://www.npmjs.com/package/git-shell-scripts)
+
+```
+npm install git-shell-scripts
+```
+
 ## Docs
 
 https://www.atlassian.com/git/tutorials/git-hooks
