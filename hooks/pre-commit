@@ -1,8 +1,12 @@
-#!/bin/bash
+#!/bin/sh
 MY_DIR=$(dirname "$(realpath "$0")")
 HOOKS_DIR=$(cat $MY_DIR/hooks_dir)
 HOOK="$HOOKS_DIR/pre-commit"
-test -e $HOOK || (echo "No pre-commit hook - skipped" && exit 0);
+if [ ! $(test -e $HOOK) ]
+then
+ echo "No pre-commit hook - skipped";
+ exit 0;
+fi
 
 # TODO: Add on SIGTERM
 
