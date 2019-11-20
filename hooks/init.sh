@@ -12,5 +12,5 @@ echo $HOOKS_PATH > "$MY_DIR/hooks_dir"
 
 git config --local core.hookPath $MY_DIR
 
-echo "Wrapper git-hooks in $HOOKS_PATH"
+echo "Wrapped git hooks in folder '$HOOKS_PATH'"
 exit 0;
