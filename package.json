@@ -6,12 +6,11 @@
   "bin": "./hooks.sh",
   "dependencies": {},
   "devDependencies": {
-    "np": "^5.1.2"
+    "np": "^5.1.3"
   },
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
-    "prepublish": "git push",
-    "publish": "np",
+    "release": "np",
     "postinstall": "bash hooks.sh git-hooks"
   },
   "repository": {
