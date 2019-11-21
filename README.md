@@ -2,10 +2,10 @@
 
 Wrapper scripts
 
-[npm](https://www.npmjs.com/package/git-shell-scripts)
+[npm](https://www.npmjs.com/package/git-hooks-wrapper)
 
 ```
-npm install git-shell-scripts
+npm install git-hooks-wrapper
 ```
 
 ## Docs
