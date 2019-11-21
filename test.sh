@@ -1,4 +1,6 @@
 #!/bin/sh
+./hooks.sh
+
 MY_DIR=$(dirname "$(realpath "$0")")
 HOOKS=$(cat hooks/hooks_dir)
 REPO="repo"
@@ -9,7 +11,7 @@ cd $REPO
 #exec bash
 git init
 
-echo "Init";
+echo "Test: init";
 $MY_DIR/hooks.sh $HOOKS
 if [ $(git config --get core.hooksPath) != "$MY_DIR/hooks" ]
 then
