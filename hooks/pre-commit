@@ -10,8 +10,6 @@ then
  exit 0;
 fi
 
-# TODO: Add on SIGTERM
-
 STASH_NAME="pre-commit.$(date +%F.%T)"
 # TODO: Recursive for submodules
 git stash push -q --keep-index --include-untracked -m $STASH_NAME
@@ -27,14 +25,16 @@ _unstash() {
     else
         echo Last stash is not mine!
     fi
+    exit $RESULT
 }
 
-$HOOK
+trap _unstash TERM
+trap _unstash KILL
+trap _unstash INT
 
+$HOOK
 RESULT=$?
 
 # During tests updated snapshots can be produced and track it in your pre-commit hook with something like
 # git add -n? -f? --all 
 _unstash
-
-exit $RESULT

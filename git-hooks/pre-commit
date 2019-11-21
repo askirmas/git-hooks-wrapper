@@ -1,2 +1,3 @@
 #!/bin/sh
-sleep 3;
+echo "pre-commit started"
+sleep 10
