@@ -1,10 +1,10 @@
 #!/bin/sh
-./hooks.sh
+HOOKS=$(cat hooks/hooks_dir)
+./hooks.sh $HOOKS
 
 _commit() {
-  touch file;
   echo "1" >> file;
-  git add --all && git commit -a -m "readme";
+  git commit -am "readme";
 }
 
 _failed() {
@@ -22,6 +22,8 @@ cd $REPO
 mkdir $HOOKS
 
 git init
+touch file
+git add file
 
 echo "TEST: init";
 $MY_DIR/hooks.sh $HOOKS
@@ -38,7 +40,20 @@ then
   _failed
 fi
 
-echo "TEST: bad commit";
+touch "$HOOKS/pre-commit"
+chmod +x "$HOOKS/pre-commit"
+git add "$HOOKS/pre-commit"
+
+
+echo "TEST: good at pre-commit";
+cp -rf "$MY_DIR/tests/exit0.sh" "$HOOKS/pre-commit"
+_commit
+if [ $? != 0 ]
+then
+  _failed
+fi
+
+echo "TEST: bad at pre-commit";
 cp -rf "$MY_DIR/tests/exit1.sh" "$HOOKS/pre-commit"
 _commit
 if [ $? = 0 ]
@@ -46,10 +61,19 @@ then
   _failed
 fi
 
-echo "TEST: good commit";
-cp -rf "$MY_DIR/tests/exit0.sh" "$HOOKS/pre-commit"
+#echo "TEST: stash push";
+#echo "TEST: commit interuption";
+echo "TEST: stash pop";
+touch "tostash"
 _commit
-if [ $? != 0 ]
+if [ $? = 0  ]
 then
   _failed
+else 
+  echo "check appearance"
+  test -e "tostash"
+  if [ $? != 0  ]
+  then
+    _failed
+  fi
 fi
