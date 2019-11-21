@@ -1,6 +1,6 @@
 {
   "name": "git-hooks-wrapper",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "private": false,
   "description": "Wrapper scripts for Git Hooks",
   "bin": "./hooks.sh",
