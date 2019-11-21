@@ -8,14 +8,14 @@ REPO="repo"
 rm -rf $REPO
 mkdir $REPO
 cd $REPO
-#exec bash
+
 git init
 
 echo "Test: init";
 $MY_DIR/hooks.sh $HOOKS
 if [ $(git config --get core.hooksPath) != "$MY_DIR/hooks" ]
 then
-  echo "git config --get core.hooksPath failed"
+  echo "FAILED: git config --get core.hooksPath"
   exit 1;
 fi
 
