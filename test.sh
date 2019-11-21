@@ -1,6 +1,11 @@
 #!/bin/sh
 ./hooks.sh
 
+_failed() {
+  echo "FAILED"
+  exit 1;
+}
+
 MY_DIR=$(dirname "$(realpath "$0")")
 HOOKS=$(cat hooks/hooks_dir)
 REPO="repo"
@@ -11,13 +16,19 @@ cd $REPO
 
 git init
 
-echo "Test: init";
+echo "TEST: init";
 $MY_DIR/hooks.sh $HOOKS
 if [ $(git config --get core.hooksPath) != "$MY_DIR/hooks" ]
 then
-  echo "FAILED: git config --get core.hooksPath"
-  exit 1;
+  _failed
+fi
+
+echo "TEST: commit without hooks";
+touch readme.md
+git add --all && git commit -a -m "readme"
+if [ $? != 0 ]
+then
+  _failed
 fi
 
 cd $MY_DIR
-rm -rf $REPO
