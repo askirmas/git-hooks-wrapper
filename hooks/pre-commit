@@ -17,21 +17,24 @@ STASH_NAME="pre-commit.$(date +%F.%T)"
 git stash push -q --keep-index --include-untracked -m $STASH_NAME
 STASH_TITLE="On $(git rev-parse --abbrev-ref HEAD): ${STASH_NAME}"
 
+_unstash() {
+    STASH_LAST=$(git stash list -1 --pretty=%B)
+
+    if [ "$STASH_LAST" = "$STASH_TITLE" ]
+    then
+        # TODO: Deleted files afterwards are somehow in index as untracked
+        git stash pop -q
+    else
+        echo Last stash is not mine!
+    fi
+}
+
 $HOOK
 
 RESULT=$?
 
 # During tests updated snapshots can be produced and track it in your pre-commit hook with something like
 # git add -n? -f? --all 
-
-STASH_LAST=$(git stash list -1 --pretty=%B)
-
-if [ "$STASH_LAST" = "$STASH_TITLE" ]
-then
-    # TODO: Deleted files afterwards are somehow in index as untracked
-    git stash pop -q
-else
-    echo Last stash is not mine!
-fi
+_unstash
 
 exit $RESULT
