@@ -1,6 +1,12 @@
 #!/bin/sh
 ./hooks.sh
 
+_commit() {
+  touch file;
+  echo "1" >> file;
+  git add --all && git commit -a -m "readme";
+}
+
 _failed() {
   echo "FAILED"
   exit 1;
@@ -13,6 +19,7 @@ REPO="repo"
 rm -rf $REPO
 mkdir $REPO
 cd $REPO
+mkdir $HOOKS
 
 git init
 
@@ -23,12 +30,26 @@ then
   _failed
 fi
 
+
 echo "TEST: commit without hooks";
-touch readme.md
-git add --all && git commit -a -m "readme"
+_commit
 if [ $? != 0 ]
 then
   _failed
 fi
 
-cd $MY_DIR
+echo "TEST: bad commit";
+cp -rf "$MY_DIR/tests/exit1.sh" "$HOOKS/pre-commit"
+_commit
+if [ $? = 0 ]
+then
+  _failed
+fi
+
+echo "TEST: good commit";
+cp -rf "$MY_DIR/tests/exit0.sh" "$HOOKS/pre-commit"
+_commit
+if [ $? != 0 ]
+then
+  _failed
+fi
