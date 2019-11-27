@@ -8,7 +8,7 @@ else
   HOOKS_PATH=$1
 fi
 
-echo $HOOKS_PATH > "$MY_DIR/hooks_dir"
+echo -n $HOOKS_PATH > "$MY_DIR/hooks_dir"
 
 git config --local core.hooksPath $MY_DIR
 
