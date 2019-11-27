@@ -10,10 +10,13 @@ then
  exit 0;
 fi
 
+echo -e "\e[1;33;40m$HOOK\e[0m" 
 STASH_NAME="pre-commit.$(date +%F.%T)"
-# TODO: Recursive for submodules
-git stash push -q --keep-index --include-untracked -m $STASH_NAME
+# TODO: Recursive for submodules?
+git stash push -q --keep-index --include-untracked -m $STASH_NAME;
 STASH_TITLE="On $(git rev-parse --abbrev-ref HEAD): ${STASH_NAME}"
+
+# git clean -f ? issue#2
 
 _unstash() {
     STASH_LAST=$(git stash list -1 --pretty=%B)
@@ -23,9 +26,9 @@ _unstash() {
         # TODO: Deleted files afterwards are somehow in index as untracked
         git stash pop -q
     else
-        echo Last stash is not mine!
+        echo -e "\e[33mLast stash is not mine!\e[0m"
     fi
-    exit $RESULT
+    echo -e "\e[1;33;40mpre-commit done\e[0m" 
 }
 
 trap _unstash TERM
@@ -38,3 +41,4 @@ RESULT=$?
 # During tests updated snapshots can be produced and track it in your pre-commit hook with something like
 # git add -n? -f? --all 
 _unstash
+exit $RESULT
