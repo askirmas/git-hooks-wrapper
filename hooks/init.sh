@@ -8,9 +8,9 @@ else
   HOOKS_PATH=$1
 fi
 
-echo "$HOOKS_PATH" > "$MY_DIR/hooks_dir"
+echo -n "$HOOKS_PATH" > "$MY_DIR/hooks_dir"
 
-git config --local core.hooksPath $MY_DIR
+git config --local core.hooksPath "$MY_DIR"
 
 echo "Wrapped git hooks in folder '$HOOKS_PATH': $(git config --local --get core.hooksPath)"
 exit 0;
