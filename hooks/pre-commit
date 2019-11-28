@@ -27,6 +27,7 @@ _unstash() {
 
     if [ "$STASH_LAST" = "$STASH_TITLE" ]
     then
+        # NB -q makes things crazy
         git stash pop > /dev/null
     else
         echo -e "\033[31mLast stash is not mine!\033[0m"

@@ -38,21 +38,15 @@ git add file
 test="first commit without hooks"
 _it "$test"
 _commit "$test"
-if [ "$?" != 0 ]
-then
-  _failed "$test"
-fi
+[ "$?" == 0 ] || _failed "$test"
 
 test="init"
 _it "$test"
 $MY_DIR/main.sh $HOOKS
 
 HOOKS_CONFIG=$(git config --get core.hooksPath | sed -e 's/^\([A-Z]\):/\/\1/' | tr '[:upper:]' '[:lower:]')
-if [ "$HOOKS_CONFIG" != $(echo "$MY_DIR/hooks" | tr '[:upper:]' '[:lower:]') ]
-then
-  echo "$HOOKS_CONFIG != $MY_DIR/hooks"
-  _failed "$test"
-fi
+[ "$HOOKS_CONFIG" == $(echo "$MY_DIR/hooks" | tr '[:upper:]' '[:lower:]') ] \
+||  _failed "$test: $HOOKS_CONFIG != $MY_DIR/hooks"
 
 cp -rf "$MY_DIR/tests/exit0.sh" "$HOOKS/pre-commit"
 git add "$HOOKS/pre-commit"
@@ -61,61 +55,42 @@ git commit -nm "init pre-commit"
 test="pre-commit exit0"
 _it "$test"
 _commit "$test"
-if [ "$?" != 0 ]
-then
-  _failed "$test"
-fi
+[ $? == 0 ] || _failed "$test"
 
 test="delete file"
 rm -rf file
 _it "$test"
 git commit -avm "$test" && (test -e file; [ $? == 1 ]) 
 result=$?
-if [ $result != 0 ]
-then
-  _failed "$test: $result"
-fi
+[ $result == 0 ] || _failed "$test: $result"
 
 _commit "recover file"
 
 cp -rf "$MY_DIR/tests/exit1.sh" "$HOOKS/pre-commit" || exit 1;
 git commit -anm "bad pre-commit"
+
 test="pre-commit exit1"
 _it "$test"
 _commit "$test"
-if [ $? == 0 ]
-then
-  _failed "$test"
-fi
+[ $? != 0 ] ||  _failed "$test"
 
 test="stash pop"
-_it "$test"
 touch "tostash"
+_it "$test"
 _commit "$test"
-if [ "$?" == 0  ]
-then
-  _failed "$test"
-fi
+[ $? != 0  ] || _failed "$test"
 
 test="check appearance"
 _it "$test"
 test -e "tostash"
-if [ "$?" != 0  ]
-then
-  _failed "$test"
-fi
+[ "$?" == 0  ] || _failed "$test"
 
-
-
-test="delete file"
 rm -rf file
-_it "$test"
 git add file && git commit -avm "$test"
+test="delete file"
+_it "$test"
 test -e file 
-if [ $? != 1 ]
-then
-  _failed "$test"
-fi
+[ $? == 1 ] || _failed "$test"
 
 #it commit interuption;
 
