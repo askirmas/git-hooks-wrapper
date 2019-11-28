@@ -14,15 +14,14 @@ then
 fi
 
 echo -e "\033[1;33m<pre-commit> \033[0m$HOOK" 
-STATUS=$(git status -z > 1)
-[ "$STATUS" == "" ] || (
-    STASH_NAME="pre-commit.$(date +%F.%T)"
-    ../scripts/stash_untracked.sh "$STASH_NAME"
-    STASH_TITLE="On $(git rev-parse --abbrev-ref HEAD): ${STASH_NAME}"
-)
+
+STATUS=$(git status -s)
+STASH_NAME="pre-commit.$(date +%F.%T)"
+[ "$STATUS" == "" ] || "$MY_DIR/../scripts/stash_untracked.sh" "$STASH_NAME"
+STASH_TITLE="On $($MY_DIR/../scripts/getbranch.sh): ${STASH_NAME}"
 
 _unstash() {
-    [ "$STASH_TITLE" == "" ] && return
+    [ "$STATUS" == "" ] && return
     STASH_LAST=$(git stash list -1 --pretty=%B)
 
     if [ "$STASH_LAST" = "$STASH_TITLE" ]
@@ -31,6 +30,7 @@ _unstash() {
         git stash pop > /dev/null
     else
         echo -e "\033[31mLast stash is not mine!\033[0m"
+        echo "$STASH_LAST\n$STASH_TITLE"
     fi
 }
 

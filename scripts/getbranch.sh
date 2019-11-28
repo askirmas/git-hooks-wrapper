@@ -1,0 +1,2 @@
+#!/bin/sh
+echo $(git rev-parse --abbrev-ref HEAD)
