@@ -22,7 +22,7 @@ STATUS=$(git status -z > 1)
 )
 
 _unstash() {
-    [ "$STASH_TITLE" == "" ] && return 
+    [ "$STASH_TITLE" == "" ] && return
     STASH_LAST=$(git stash list -1 --pretty=%B)
 
     if [ "$STASH_LAST" = "$STASH_TITLE" ]
