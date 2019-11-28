@@ -1,14 +1,24 @@
-#!/bin/sh
+#!/bin/bash
+reset=\\033[0m
+
 HOOKS=$(cat hooks/hooks_dir)
 ./hooks.sh $HOOKS
 
+_it() {
+  echo -e "\033[1;30;43m TEST \033[0m \033[1;4m$1$reset"
+}
 _commit() {
-  echo "1" >> file;
-  git commit -am "readme";
+  echo "$1" >> file
+  git add file && git commit -avm "$1"
+  return $?
 }
 
+_passed() {
+  echo "$1"
+  echo -e "\033[1;30;42m PASSED \033[0;1;4m $1 $reset"
+}
 _failed() {
-  echo "FAILED"
+  echo -e "\033[1;41m FAILED $reset $1";
   exit 1;
 }
 
@@ -25,55 +35,64 @@ git init
 touch file
 git add file
 
-echo "TEST: init";
+test="first commit without hooks"
+_it "$test"
+_commit "$test"
+if [ "$?" != 0 ]
+then
+  _failed "$test"
+fi
+
+test="init"
+_it "$test"
 $MY_DIR/hooks.sh $HOOKS
-if [ $(git config --get core.hooksPath) != "$MY_DIR/hooks" ]
+
+HOOKS_CONFIG=$(git config --get core.hooksPath | sed -e 's/^\([A-Z]\):/\/\1/' | tr '[:upper:]' '[:lower:]')
+if [ "$HOOKS_CONFIG" != $(echo "$MY_DIR/hooks" | tr '[:upper:]' '[:lower:]') ]
 then
-  _failed
+  echo "$HOOKS_CONFIG != $MY_DIR/hooks"
+  _failed "$test"
 fi
 
-
-echo "TEST: commit without hooks";
-_commit
-if [ $? != 0 ]
-then
-  _failed
-fi
-
-touch "$HOOKS/pre-commit"
-chmod +x "$HOOKS/pre-commit"
-git add "$HOOKS/pre-commit"
-
-
-echo "TEST: good at pre-commit";
 cp -rf "$MY_DIR/tests/exit0.sh" "$HOOKS/pre-commit"
-_commit
-if [ $? != 0 ]
+git add "$HOOKS/pre-commit"
+git commit -nm "init pre-commit"
+
+test="pre-commit exit0"
+_it "$test"
+_commit "$test"
+if [ "$?" != 0 ]
 then
-  _failed
+  _failed "$test"
 fi
 
-echo "TEST: bad at pre-commit";
-cp -rf "$MY_DIR/tests/exit1.sh" "$HOOKS/pre-commit"
-_commit
-if [ $? = 0 ]
+cp -rf "$MY_DIR/tests/exit1.sh" "$HOOKS/pre-commit" || exit 1;
+git commit -anm "bad pre-commit"
+test="pre-commit exit1"
+_it "$test"
+_commit "$test"
+if [ "$?" = 0 ]
 then
-  _failed
+  _failed "$test $?"
 fi
 
-#echo "TEST: stash push";
-#echo "TEST: commit interuption";
-echo "TEST: stash pop";
+#it stash push;
+#it commit interuption;
+test="stash pop"
+_it "$test"
 touch "tostash"
-_commit
-if [ $? = 0  ]
+_commit "$test"
+if [ "$?" = 0  ]
 then
-  _failed
+  _failed "$test"
 else 
-  echo "check appearance"
+  test="check appearance"
+  _it "$test"
   test -e "tostash"
-  if [ $? != 0  ]
+  if [ "$?" != 0  ]
   then
-    _failed
+    _failed "$test"
   fi
 fi
+
+echo -e "\n\033[1;30;42m DONE \033[0m"

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 MY_DIR=$(dirname "$(realpath "$0")")
 
 case "$1" in
