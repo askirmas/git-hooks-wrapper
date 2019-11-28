@@ -22,6 +22,20 @@ _failed() {
   exit 1;
 }
 
+realpath() {
+  OURPWD=$PWD
+  cd "$(dirname "$1")"
+  LINK=$(readlink "$(basename "$1")")
+  while [ "$LINK" ]; do
+    cd "$(dirname "$LINK")"
+    LINK=$(readlink "$(basename "$1")")
+  done
+  REALPATH="$PWD/$(basename "$1")"
+  cd "$OURPWD"
+  echo "$REALPATH"
+}
+
+
 MY_DIR=$(dirname "$(realpath "$0")")
 HOOKS=$(cat hooks/hooks_dir)
 REPO="repo"
@@ -48,7 +62,7 @@ _it "$test"
 $MY_DIR/hooks.sh $HOOKS
 #TODO check that $(uname) not starts with MINGW 
 HOOKS_CONFIG=$(git config --get core.hooksPath | sed -e 's/^\([A-Z]\):/\/\1/' | tr '[:upper:]' '[:lower:]')
-if [ "$HOOKS_CONFIG" != "$MY_DIR/hooks" ]
+if [ "$HOOKS_CONFIG" != $("$MY_DIR/hooks" | tr '[:upper:]' '[:lower:]') ]
 then
   echo "$HOOKS_CONFIG != $MY_DIR/hooks"
   _failed "$test"
