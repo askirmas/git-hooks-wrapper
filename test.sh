@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 reset=\\033[0m
 
 HOOKS=$(cat hooks/hooks_dir)
@@ -21,20 +21,6 @@ _failed() {
   echo -e "\033[1;41m FAILED $reset $1";
   exit 1;
 }
-
-realpath() {
-  OURPWD=$PWD
-  cd "$(dirname "$1")"
-  LINK=$(readlink "$(basename "$1")")
-  while [ "$LINK" ]; do
-    cd "$(dirname "$LINK")"
-    LINK=$(readlink "$(basename "$1")")
-  done
-  REALPATH="$PWD/$(basename "$1")"
-  cd "$OURPWD"
-  echo "$REALPATH"
-}
-
 
 MY_DIR=$(dirname "$(realpath "$0")")
 HOOKS=$(cat hooks/hooks_dir)
