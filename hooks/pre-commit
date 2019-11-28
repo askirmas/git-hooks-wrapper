@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: Recursive for submodules?
+
 MY_DIR=$(dirname "$(realpath "$0")")
 HOOKS_DIR=$(cat $MY_DIR/hooks_dir)
 HOOK="$HOOKS_DIR/pre-commit"
@@ -7,24 +9,20 @@ HOOK="$HOOKS_DIR/pre-commit"
 test -e $HOOK
 if [ $? -ne 0 ]
 then
- echo "No pre-commit hook '$HOOK'- skipped";
+ echo -e "\033[31mNo pre-commit hook '$HOOK'- skipped\033[0m";
  exit 0;
 fi
 
 echo -e "\033[1;33m<pre-commit> \033[0m$HOOK" 
 STASH_NAME="pre-commit.$(date +%F.%T)"
-# TODO: Recursive for submodules?
-git stash push -q --keep-index --include-untracked -m $STASH_NAME;
+../scripts/stash_untracked.sh "$STASH_NAME"
 STASH_TITLE="On $(git rev-parse --abbrev-ref HEAD): ${STASH_NAME}"
-
-# git clean -f ? issue#2
 
 _unstash() {
     STASH_LAST=$(git stash list -1 --pretty=%B)
 
     if [ "$STASH_LAST" = "$STASH_TITLE" ]
     then
-        # TODO: Deleted files afterwards are somehow in index as untracked
         git stash pop > /dev/null
     else
         echo -e "\033[31mLast stash is not mine!\033[0m"
@@ -36,10 +34,8 @@ trap _unstash KILL
 trap _unstash INT
 
 RETURN=$($HOOK)
-RESULT="$?"
+RESULT=$?
 
-# During tests updated snapshots can be produced and track it in your pre-commit hook with something like
-# git add -n? -f? --all 
 _unstash
 if [ $RESULT != 0 ]
 then

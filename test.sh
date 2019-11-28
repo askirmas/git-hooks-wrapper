@@ -66,33 +66,57 @@ then
   _failed "$test"
 fi
 
+test="delete file"
+rm -rf file
+_it "$test"
+git commit -avm "$test" && (test -e file; [ $? == 1 ]) 
+result=$?
+if [ $result != 0 ]
+then
+  _failed "$test: $result"
+fi
+
+_commit "recover file"
+
 cp -rf "$MY_DIR/tests/exit1.sh" "$HOOKS/pre-commit" || exit 1;
 git commit -anm "bad pre-commit"
 test="pre-commit exit1"
 _it "$test"
 _commit "$test"
-if [ "$?" = 0 ]
+if [ $? == 0 ]
 then
-  _failed "$test $?"
+  _failed "$test"
 fi
 
-#it stash push;
-#it commit interuption;
 test="stash pop"
 _it "$test"
 touch "tostash"
 _commit "$test"
-if [ "$?" = 0  ]
+if [ "$?" == 0  ]
 then
   _failed "$test"
-else 
-  test="check appearance"
-  _it "$test"
-  test -e "tostash"
-  if [ "$?" != 0  ]
-  then
-    _failed "$test"
-  fi
 fi
+
+test="check appearance"
+_it "$test"
+test -e "tostash"
+if [ "$?" != 0  ]
+then
+  _failed "$test"
+fi
+
+
+
+test="delete file"
+rm -rf file
+_it "$test"
+git add file && git commit -avm "$test"
+test -e file 
+if [ $? != 1 ]
+then
+  _failed "$test"
+fi
+
+#it commit interuption;
 
 echo -e "\n\033[1;30;42m DONE \033[0m"
