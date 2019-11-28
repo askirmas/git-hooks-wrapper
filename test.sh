@@ -5,7 +5,7 @@ HOOKS=$(cat hooks/hooks_dir)
 ./hooks.sh $HOOKS
 
 _it() {
-  echo -e "\033[1;30;43m TEST \033[0;1;4m $1 $reset"
+  echo -e "\033[1;30;43m TEST \033[0m \033[1;4m$1$reset"
 }
 _commit() {
   echo "$1" >> file
@@ -46,9 +46,9 @@ fi
 test="init"
 _it "$test"
 $MY_DIR/hooks.sh $HOOKS
-#TODO check that $(uname) not starts with MINGW 
+
 HOOKS_CONFIG=$(git config --get core.hooksPath | sed -e 's/^\([A-Z]\):/\/\1/' | tr '[:upper:]' '[:lower:]')
-if [ "$HOOKS_CONFIG" != $("$MY_DIR/hooks" | tr '[:upper:]' '[:lower:]') ]
+if [ "$HOOKS_CONFIG" != $(echo "$MY_DIR/hooks" | tr '[:upper:]' '[:lower:]') ]
 then
   echo "$HOOKS_CONFIG != $MY_DIR/hooks"
   _failed "$test"
