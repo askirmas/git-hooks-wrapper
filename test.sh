@@ -2,7 +2,7 @@
 reset=\\033[0m
 
 HOOKS=$(cat hooks/hooks_dir)
-./hooks.sh $HOOKS
+./main.sh $HOOKS
 
 _it() {
   echo -e "\033[1;30;43m TEST \033[0m \033[1;4m$1$reset"
@@ -45,7 +45,7 @@ fi
 
 test="init"
 _it "$test"
-$MY_DIR/hooks.sh $HOOKS
+$MY_DIR/main.sh $HOOKS
 
 HOOKS_CONFIG=$(git config --get core.hooksPath | sed -e 's/^\([A-Z]\):/\/\1/' | tr '[:upper:]' '[:lower:]')
 if [ "$HOOKS_CONFIG" != $(echo "$MY_DIR/hooks" | tr '[:upper:]' '[:lower:]') ]
