@@ -1,19 +1,24 @@
-#!/bin/sh -x
-reset=\\e[0m
+#!/bin/sh
+reset=\\033[0m
 
 HOOKS=$(cat hooks/hooks_dir)
 ./hooks.sh $HOOKS
 
 _it() {
-  echo -e "\e[1;30;42m TEST \e[0;1;4m $1 $reset"
+  echo -e "\033[1;30;43m TEST \033[0;1;4m $1 $reset"
 }
 _commit() {
-  echo "$1" >> file;
-  git add file && git commit -avm "$1" || _failed;
+  echo "$1" >> file
+  git add file && git commit -avm "$1"
+  return $?
 }
 
+_passed() {
+  echo "$1"
+  echo -e "\033[1;30;42m PASSED \033[0;1;4m $1 $reset"
+}
 _failed() {
-  echo -e "\e[1;41m FAILED $reset$1"
+  echo -e "\033[1;41m FAILED $reset $1";
   exit 1;
 }
 
@@ -60,7 +65,6 @@ if [ "$?" != 0 ]
 then
   _failed "$test"
 fi
-exit;
 
 cp -rf "$MY_DIR/tests/exit1.sh" "$HOOKS/pre-commit" || exit 1;
 git commit -anm "bad pre-commit"
@@ -69,7 +73,7 @@ _it "$test"
 _commit "$test"
 if [ "$?" = 0 ]
 then
-  _failed "$test"
+  _failed "$test $?"
 fi
 
 #it stash push;
@@ -78,15 +82,17 @@ test="stash pop"
 _it "$test"
 touch "tostash"
 _commit "$test"
-if [ $? = 0  ]
+if [ "$?" = 0  ]
 then
   _failed "$test"
 else 
   test="check appearance"
-  it "$test"
+  _it "$test"
   test -e "tostash"
-  if [ $? != 0  ]
+  if [ "$?" != 0  ]
   then
     _failed "$test"
   fi
 fi
+
+echo -e "\n\033[1;30;42m DONE \033[0m"

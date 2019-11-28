@@ -10,7 +10,7 @@ then
  exit 0;
 fi
 
-echo -e "\e[1;33;40m$HOOK\e[0m" 
+echo -e "\033[1;33;40m<pre-commit> \033[0m$HOOK" 
 STASH_NAME="pre-commit.$(date +%F.%T)"
 # TODO: Recursive for submodules?
 git stash push -q --keep-index --include-untracked -m $STASH_NAME;
@@ -24,21 +24,26 @@ _unstash() {
     if [ "$STASH_LAST" = "$STASH_TITLE" ]
     then
         # TODO: Deleted files afterwards are somehow in index as untracked
-        git stash pop -q
+        git stash pop > /dev/null
     else
-        echo -e "\e[33mLast stash is not mine!\e[0m"
+        echo -e "\033[31mLast stash is not mine!\033[0m"
     fi
-    echo -e "\e[1;33;40mpre-commit done\e[0m" 
 }
 
 trap _unstash TERM
 trap _unstash KILL
 trap _unstash INT
 
-$HOOK
-RESULT=$?
+RETURN=$($HOOK)
+RESULT="$?"
 
 # During tests updated snapshots can be produced and track it in your pre-commit hook with something like
 # git add -n? -f? --all 
 _unstash
+if [ $RESULT != 0 ]
+then
+    echo -e "$RETURN\nFailed \033[1;41m</pre-commit> \033[0m" 
+else
+    echo -e "Passed \033[1;32m</pre-commit>\033[0m" 
+fi
 exit $RESULT
