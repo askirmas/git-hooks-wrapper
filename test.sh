@@ -72,6 +72,12 @@ touch "tostash"
 _it; _commit
 test -e "tostash" && _passed || _failed
 
+test="npm install"
+echo "{}" > package.json
+_it;
+npm install "$MY_DIR" && _passed || _failed
+
+
 # TODO: it commit interuption;
 
 # TODO: check git log
