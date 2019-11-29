@@ -5,13 +5,11 @@
   "description": "Wrapper scripts for Git Hooks",
   "bin": "./main",
   "dependencies": {},
-  "devDependencies": {
-    "np": "^5.1.3"
-  },
+  "devDependencies": {},
   "scripts": {
-    "test": "./scripts/test",
-    "release": "np",
-    "postinstall": "./main init"
+    "test": "bash main test",
+    "release": "npx np",
+    "postinstall": "bash main init"
   },
   "repository": {
     "type": "git",

@@ -1,17 +1,21 @@
 #!/bin/bash
-MY_DIR=$(dirname "$(realpath "$0")")
-MY_DIR=$(realpath "$MY_DIR/../hooks")
+WRAPPERS_PATH=$(dirname "$(realpath "$0")")
+WRAPPERS_PATH=$(realpath "$WRAPPERS_PATH/../hooks")
 HOOKS_PATH="${1:-git-hooks}"
 
-echo -n "$HOOKS_PATH" > "$MY_DIR/../hooks_dir"
+echo -n "$HOOKS_PATH" > "$WRAPPERS_PATH/../hooks_dir"
 
-git config --local core.hooksPath "$MY_DIR"
-CORE=$(git config --local --get core.hooksPath)
-if [ "$CORE" == "$MY_DIR" ]
+git config --local core.hooksPath "$WRAPPERS_PATH"
+# Windows MINGW stuff
+CONFIGED=$(git config --get core.hooksPath | \
+sed -e 's/^\([A-Z]\):/\/\1/' | \
+tr '[:upper:]' '[:lower:]')
+WRAPPERS_PATH=$(echo $WRAPPERS_PATH | tr '[:upper:]' '[:lower:]')
+if [ "$CONFIGED" == "$WRAPPERS_PATH" ]
 then
   echo "Wrapped git hooks in folder '$HOOKS_PATH'"
   exit 0
 else 
-  echo "Something went wrong. Run manually: git config --local core.hooksPath \"$MY_DIR\""
+  echo "hooksPathPath wasn't applied - received '$CONFIGED'.\nRun manually: git config --local core.hooksPath \"$WRAPPERS_PATH\""
   exit 1
 fi

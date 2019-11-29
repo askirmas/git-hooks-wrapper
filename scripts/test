@@ -38,12 +38,8 @@ test="first commit without hooks"
 _it; _commit
 [ "$?" == 0 ] && _passed || _failed
 
-$MY_DIR/main init $HOOKS
-HOOKS_CONFIG=$(git config --get core.hooksPath | sed -e 's/^\([A-Z]\):/\/\1/' | tr '[:upper:]' '[:lower:]')
 test="init"
-_it
-[ "$HOOKS_CONFIG" == $(echo "$MY_DIR/hooks" | tr '[:upper:]' '[:lower:]') ] \
-||  _failed "$HOOKS_CONFIG != $MY_DIR/hooks"
+_it; $MY_DIR/main init $HOOKS && _passed || _failed
 
 cp -rf "$MY_DIR/tests/exit0.sh" "$HOOKS/pre-commit"
 git add "$HOOKS/pre-commit"
