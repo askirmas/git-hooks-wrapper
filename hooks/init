@@ -1,4 +1,6 @@
 #!/bin/bash
+test -e .git || exit 1
+
 MY_DIR=$(dirname "$(realpath "$0")")
 HOOKS_PATH="${1:-git-hooks}"
 

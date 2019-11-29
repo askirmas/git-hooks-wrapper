@@ -14,10 +14,10 @@ _commit() {
   return $?
 }
 _passed() {
-  echo -e "\033[1;30;42m PASSED \033[0;1;4m $1 $reset"
+  echo -e "\033[1;30;42m PASSED $reset $@"
 }
 _failed() {
-  echo -e "\033[1;41m FAILED $reset $test: $1";
+  echo -e "\033[1;41m FAILED $reset $test: \033[1;4m$@$reset";
   exit 1;
 }
 
@@ -29,13 +29,17 @@ mkdir $REPO
 cd $REPO
 mkdir $HOOKS
 
+test="init without repo"
+_it; $MY_DIR/main.sh init $HOOKS
+[ "$?" == 1 ] && _passed || _failed
+
 git init
 touch file
 git add file
 
 test="first commit without hooks"
 _it; _commit
-[ "$?" == 0 ] || _failed
+[ "$?" == 0 ] && _passed || _failed
 
 $MY_DIR/main.sh init $HOOKS
 HOOKS_CONFIG=$(git config --get core.hooksPath | sed -e 's/^\([A-Z]\):/\/\1/' | tr '[:upper:]' '[:lower:]')
@@ -50,13 +54,13 @@ git commit -nm "init pre-commit"
 
 test="pre-commit exit0"
 _it; _commit
-[ $? == 0 ] || _failed
+[ $? == 0 ] && _passed || _failed
 
 test="delete file"
 rm -rf file
 _it
 git commit -avm "$test" && (test -e file; [ $? == 1 ]) 
-[ $? == 0 ] || _failed
+[ $? == 0 ] && _passed || _failed
 
 test=""
 _commit "recover file"
@@ -65,26 +69,14 @@ cp -rf "$MY_DIR/tests/exit1.sh" "$HOOKS/pre-commit" || exit 1;
 git commit -anm "bad pre-commit"
 
 test="pre-commit exit1"
-_it; _commit
-[ $? != 0 ] ||  _failed
+_it; _commit && _failed || _passed
 
-test="stash pop"
+test="stash pop after fail"
 touch "tostash"
 _it; _commit
-[ $? != 0  ] || _failed
+test -e "tostash" && _passed || _failed
 
-test="check appearance"
-_it
-test -e "tostash"
-[ "$?" == 0  ] || _failed
+# TODO: it commit interuption;
 
-test="delete file"
-rm -rf file
-git add file && git commit -avm "$test"
-_it
-test -e file 
-[ $? == 1 ] || _failed
-
-#it commit interuption;
-
+# TODO: check git log
 echo -e "\n\033[1;30;42m DONE \033[0m"
