@@ -1,5 +1,5 @@
 #!/bin/bash
-test -e .git || exit 1
+test -e .git || (echo "No folder .git at $(pwd)"; exit 1) || exit 1
 
 MY_DIR=$(dirname "$(realpath "$0")")
 HOOKS_PATH="${1:-git-hooks}"
