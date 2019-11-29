@@ -35,11 +35,5 @@
     "commit",
     "pre-commit",
     "precommit"
-  ],
-  "files": [
-    "README.md",
-    "main",
-    "hooks/*",
-    "scripts/*"
   ]
 }
