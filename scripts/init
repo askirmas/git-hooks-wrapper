@@ -1,6 +1,8 @@
 #!/bin/bash
-WRAPPERS_PATH=$(dirname "$(realpath "$0")")
-WRAPPERS_PATH=$(realpath "$WRAPPERS_PATH/../hooks")
+DIR=$(dirname "$(dirname "$(realpath "$0")")")
+$($DIR/main gitconfig)
+
+WRAPPERS_PATH="$DIR/hooks"
 HOOKS_PATH="${1:-git-hooks}"
 
 echo -n "$HOOKS_PATH" > "$WRAPPERS_PATH/../hooks_dir"
