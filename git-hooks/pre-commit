@@ -1,3 +1,6 @@
 #!/bin/bash
-./scripts/test>&1
+if [ $(./main getbranch) == master ]
+then 
+  ./scripts/test>&1
+fi
 exit $?
