@@ -1,7 +1,7 @@
 #!/bin/bash
 MY_DIR=$(dirname "$(realpath "$0")")
 CMD="$1"; shift
-subdirs="hooks scripts"
+subdirs="hooks utils scripts"
 
 for subdir in $(echo $subdirs | xargs); do
   test -e "$MY_DIR/$subdir/$CMD"

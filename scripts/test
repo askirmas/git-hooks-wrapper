@@ -1,8 +1,8 @@
 #!/bin/bash
 reset=\\033[0m
 
-HOOKS=$(cat hooks/hooks_dir)
-./main.sh init $HOOKS
+HOOKS=$(cat hooks_dir)
+./main init $HOOKS
 
 _it() {
   echo -e "\033[1;30;43m TEST \033[0m \033[1;4m$test$reset"
@@ -22,6 +22,7 @@ _failed() {
 }
 
 MY_DIR=$(dirname "$(realpath "$0")")
+MY_DIR=$(realpath "$MY_DIR/..")
 REPO="repo"
 
 rm -rf $REPO
@@ -37,7 +38,7 @@ test="first commit without hooks"
 _it; _commit
 [ "$?" == 0 ] && _passed || _failed
 
-$MY_DIR/main.sh init $HOOKS
+$MY_DIR/main init $HOOKS
 HOOKS_CONFIG=$(git config --get core.hooksPath | sed -e 's/^\([A-Z]\):/\/\1/' | tr '[:upper:]' '[:lower:]')
 test="init"
 _it

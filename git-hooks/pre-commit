@@ -1,4 +1,3 @@
 #!/bin/bash
-echo "Testing"
-./test.sh
+./scripts/test>&1
 exit $?

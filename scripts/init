@@ -1,8 +1,9 @@
 #!/bin/bash
 MY_DIR=$(dirname "$(realpath "$0")")
+MY_DIR=$(realpath "$MY_DIR/../hooks")
 HOOKS_PATH="${1:-git-hooks}"
 
-echo -n "$HOOKS_PATH" > "$MY_DIR/hooks_dir"
+echo -n "$HOOKS_PATH" > "$MY_DIR/../hooks_dir"
 
 git config --local core.hooksPath "$MY_DIR"
 CORE=$(git config --local --get core.hooksPath)
