@@ -42,7 +42,7 @@ test="init"
 _it; $MY_DIR/main init $HOOKS && _passed || _failed
 
 cp -pf "$MY_DIR/tests/exit0.sh" "$HOOKS/pre-commit"
-git add "$HOOKS/pre-commit"
+git add .
 git commit -nm "init pre-commit"
 
 test="pre-commit exit0"
