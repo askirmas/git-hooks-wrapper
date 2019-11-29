@@ -1,0 +1,10 @@
+#!/bin/bash
+# TODO: check is amend
+
+MSG=$(cat "$1") 
+SAME=$(git log --all --grep="$MSG" --regexp-ignore-case --fixed-strings --max-count 1)
+[ -z "$SAME" ] && exit 0;
+
+echo "Duplicated name"
+echo "$SAME"
+exit 1
