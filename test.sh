@@ -13,9 +13,7 @@ _commit() {
   git add file && git commit -avm "$msg"
   return $?
 }
-
 _passed() {
-  echo "$1"
   echo -e "\033[1;30;42m PASSED \033[0;1;4m $1 $reset"
 }
 _failed() {
@@ -24,7 +22,6 @@ _failed() {
 }
 
 MY_DIR=$(dirname "$(realpath "$0")")
-HOOKS=$(cat hooks/hooks_dir)
 REPO="repo"
 
 rm -rf $REPO
