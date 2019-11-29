@@ -1,0 +1,26 @@
+#!/bin/bash
+[ -z "$1" ] && echo "Source branch not specified" && exit 1
+
+UTILS=$(dirname "$(realpath "$0")")
+CURRENT=$($UTILS/getbranch)
+TARGET=${2:-$CURRENT}
+TEMP="$1-rebased"
+
+[ "$1" == "$CURRENT" ] && echo "Merge to self?!" && exit 1
+
+git branch -D "$TEMP"
+
+# TODO: reuse stash
+
+git checkout "$1" && \
+git checkout -b "$TEMP" && \
+git rebase "$TARGET" && \
+git checkout "$TARGET" && \
+git merge "$TEMP"
+
+RESULT=$?
+git clean -f
+git checkout "$CURRENT"
+git branch -D "$TEMP"
+
+exit $RESULT
