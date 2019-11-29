@@ -26,6 +26,7 @@ trap _unstash INT
 
 $HOOK>&1
 RESULT=$?
+[ $RESULT == "0" ] && git add .
 
 _unstash
 _exit $RESULT

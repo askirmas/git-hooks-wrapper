@@ -7,7 +7,7 @@ Make usage of git hooks easy in project of any programming language and any plat
 | Language                                                | Install                         | Command Execution     |
 | ------------------------------------------------------- | ------------------------------- | --------------------- |
 | [Node](https://www.npmjs.com/package/git-hooks-wrapper) | `npm install git-hooks-wrapper` | npx git-hooks-wrapper |
-| Python                                                  | TBD pypi                        |                       |
+| Python                                                  | TBD pypi pip                    |                       |
 | PHP                                                     | TBD Composer PEAR Packagist     |                       |
 | ...                                                     |                                 |                       |
 
@@ -25,7 +25,14 @@ In addition to [init](./scripts/init) and hooks there are several useful scripts
 ```bash
 $ $main $command $@
 ```
-Complete list of commands
+## Wrappers Functionality
+
+### pre-commit
+
+Removes untracked files and recovers them afterwards. I.e. ensures that test are running without side-effects. Produced files will be added to index if this step was successful.
+
+## Commands list
+
 ```bash
 $ $main
 # SCRIPTS:
@@ -64,6 +71,16 @@ $ $main
 - stash_untracked
 - stats
 ```
+
+## TBD
+
+### prepare-commit-msg
+
+Add argument with stats overview 
+
+### commit-msg
+
+Add arguments with message uniqueness and open issue existence 
 
 ## Further reading
 
