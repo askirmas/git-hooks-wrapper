@@ -1,31 +1,80 @@
-# Git Scripts
+# git-hooks-wrapper
 
-Wrapper scripts
+Make usage of git hooks easy in project of any programming language and any platform. Works on Windows with [git bash](https://git-scm.com/download/win). 
 
-[npm](https://www.npmjs.com/package/git-hooks-wrapper)
+## Installation
 
+| Language                                                | Install                         | Command Execution     |
+| ------------------------------------------------------- | ------------------------------- | --------------------- |
+| [Node](https://www.npmjs.com/package/git-hooks-wrapper) | `npm install git-hooks-wrapper` | npx git-hooks-wrapper |
+| Python                                                  | TBD pypi                        |                       |
+| PHP                                                     | TBD Composer PEAR Packagist     |                       |
+| ...                                                     |                                 |                       |
+
+## Basic Usage
+
+After install automatically runs `init` wrapping `$PWD/git-hooks` folder by default. Folder can be changed by running pattern
+
+``` bash
+$ $main init $hooksDirecotory
 ```
-npm install git-hooks-wrapper
+
+This project uses itself so use [./git-hooks](./git-hooks) as examples
+
+In addition to [init](./scripts/init) and hooks there are several useful scripts in [./utils](./utils) that can be run with pattern
+```bash
+$ $main $command $@
+```
+Complete list of commands
+```bash
+$ $main
+# SCRIPTS:
+- init
+- test
+# HOOKS:
+- applypatch-msg
+- commit-msg
+- fsmonitor-watchman
+- p4-pre-submit
+- post-applypatch
+- post-checkout
+- post-commit
+- post-index-change
+- post-merge
+- post-receive
+- post-rewrite
+- post-update
+- pre-applypatch
+- pre-auto-gc
+- pre-commit
+- pre-merge-commit
+- prepare-commit-msg
+- pre-push
+- pre-rebase
+- pre-receive
+- push-to-checkout
+- sendemail-validate
+- update
+# UTILS:
+- forceupdate
+- forceupdate_submodules
+- getbranch
+- getRefsBranch
+- getRemote
+- stash_untracked
+- stats
 ```
 
-## Docs
+## Further reading
+
+### About hooks
+
+https://git-scm.com/docs/githooks
 
 https://www.atlassian.com/git/tutorials/git-hooks
 
-| action   | hook               | source | args                                                         | exit 1 |
-| -------- | ------------------ | ------ | ------------------------------------------------------------ | ------ |
-| commit/0 | pre-commit         | local  | -                                                            | abort  |
-| commit/1 | prepare-commit-msg | local  | 1.  message file path<br />2. type<br />- message: -m \| -F<br />- template: -t<br />- merge<br />- squash<br />3. sha? for -c -C --amend | abort  |
-| commit/2 | commit-msg         | local  | message file path                                            | abort  |
-| commit/3 | post-commit        | local  |                                                              | -      |
-| push/0   | pre-receive        | remote |                                                              |        |
-| push/1   | update             | remote |                                                              |        |
-| push/2   | post-receive       | remote |                                                              |        |
 
-## pre-commit
+### pre-commit
 
 [https://codeinthehole.com/tips/tips-for-using-a-git-pre-commit-hook/](https://codeinthehole.com/tips/tips-for-using-a-git-pre-commit-hook/)
 
-## Note
-
-https://github.com/typicode/husky

@@ -1,10 +1,10 @@
 #!/bin/bash
 MY_DIR=$(dirname "$(realpath "$0")")
 CMD="$1"; shift
-subdirs="hooks utils scripts"
+subdirs="scripts hooks utils"
 
 for subdir in $(echo $subdirs | xargs); do
-  test -e "$MY_DIR/$subdir/$CMD"
+  test -f "$MY_DIR/$subdir/$CMD"
   if [ $? == 0 ]
   then
     $MY_DIR/$subdir/$CMD $@ >&1
@@ -12,5 +12,10 @@ for subdir in $(echo $subdirs | xargs); do
   fi
 done
 
-echo "Unknown commad"
+echo "Unknown command. Available:"
+for subdir in $(echo $subdirs | xargs); do
+  echo "# $subdir:" | tr '[:lower:]' '[:upper:]';
+  find "./$subdir" -type f -exec basename {} \; | sort | sed 's/^/- /'
+done
+
 exit 1

@@ -1,24 +1,10 @@
 #!/bin/bash
-
-# TODO: Recursive for submodules?
-
-MY_DIR=$(dirname "$(realpath "$0")")
-HOOKS_DIR=$(cat $MY_DIR/../hooks_dir)
-HOOK="$HOOKS_DIR/pre-commit"
-
-test -e $HOOK
-if [ $? -ne 0 ]
-then
- echo -e "\033[31mNo pre-commit hook '$HOOK'- skipped\033[0m";
- exit 0;
-fi
-
-echo -e "\033[1;33m<pre-commit> \033[0m$HOOK" 
+. $(dirname "$0")/../hooks_common
 
 STATUS=$(git status -s)
 STASH_NAME="pre-commit.$(date +%F.%T)"
-[ "$STATUS" == "" ] || "$MY_DIR/../utils/stash_untracked" "$STASH_NAME"
-STASH_TITLE="On $($MY_DIR/../utils/getbranch): ${STASH_NAME}"
+[ "$STATUS" == "" ] || "$DIR/utils/stash_untracked" "$STASH_NAME"
+STASH_TITLE="On $($DIR/utils/getbranch): ${STASH_NAME}"
 
 _unstash() {
     [ "$STATUS" == "" ] && return
@@ -42,10 +28,4 @@ $HOOK>&1
 RESULT=$?
 
 _unstash
-if [ $RESULT != 0 ]
-then
-    echo -e "Failed \033[1;41m</pre-commit> \033[0m" 
-else
-    echo -e "Passed \033[1;32m</pre-commit>\033[0m" 
-fi
-exit $RESULT
+_exit $RESULT

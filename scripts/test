@@ -41,7 +41,7 @@ _it; _commit
 test="init"
 _it; $MY_DIR/main init $HOOKS && _passed || _failed
 
-cp -rf "$MY_DIR/tests/exit0.sh" "$HOOKS/pre-commit"
+cp -pf "$MY_DIR/tests/exit0.sh" "$HOOKS/pre-commit"
 git add "$HOOKS/pre-commit"
 git commit -nm "init pre-commit"
 
@@ -58,7 +58,7 @@ git commit -avm "$test" && (test -e file; [ $? == 1 ])
 test=""
 _commit "recover file"
 
-cp -rf "$MY_DIR/tests/exit1.sh" "$HOOKS/pre-commit" || exit 1;
+cp -pf "$MY_DIR/tests/exit1.sh" "$HOOKS/pre-commit" || exit 1;
 git commit -anm "bad pre-commit"
 
 test="pre-commit exit1"

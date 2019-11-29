@@ -29,11 +29,20 @@
     "access": "public"
   },
   "keywords": [
-    "git",
-    "hooks",
     "git-hooks",
-    "commit",
     "pre-commit",
-    "precommit"
+    "bash-script",
+    "platform-independent",
+    "os-independent",
+    "language-independent",
+    "testing"
+  ],
+  "files": [
+    "main",
+    "hooks",
+    "scripts",
+    "utils",
+    "hooks_common",
+    "hooks_dir"
   ]
 }
