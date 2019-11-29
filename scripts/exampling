@@ -1,0 +1,3 @@
+#!/bin/bash
+cp -rnp "$PWD/.git/hooks" "$PWD/"
+cp -rnp git-hooks "$PWD/"
