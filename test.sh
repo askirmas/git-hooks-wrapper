@@ -28,12 +28,8 @@ rm -rf $REPO
 mkdir $REPO
 cd $REPO
 mkdir $HOOKS
-
-test="init without repo"
-_it; $MY_DIR/main.sh init $HOOKS
-[ "$?" == 1 ] && _passed || _failed
-
 git init
+
 touch file
 git add file
 
