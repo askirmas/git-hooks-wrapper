@@ -1,0 +1,16 @@
+#!/bin/bash
+MY_DIR=$(dirname "$(realpath "$0")")
+HOOKS_PATH="${1:-git-hooks}"
+
+echo -n "$HOOKS_PATH" > "$MY_DIR/hooks_dir"
+
+git config --local core.hooksPath "$MY_DIR"
+CORE=$(git config --local --get core.hooksPath)
+if [ "$CORE" == "$MY_DIR" ]
+then
+  echo "Wrapped git hooks in folder '$HOOKS_PATH'"
+  exit 0
+else 
+  echo "Something went wrong. Run manually: git config --local core.hooksPath \"$MY_DIR\""
+  exit 1
+fi

@@ -11,7 +11,7 @@
   "scripts": {
     "test": "./test.sh",
     "release": "np",
-    "postinstall": "./main.sh"
+    "postinstall": "./main.sh init"
   },
   "repository": {
     "type": "git",

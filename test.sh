@@ -2,7 +2,7 @@
 reset=\\033[0m
 
 HOOKS=$(cat hooks/hooks_dir)
-./main.sh $HOOKS
+./main.sh init $HOOKS
 
 _it() {
   echo -e "\033[1;30;43m TEST \033[0m \033[1;4m$test$reset"
@@ -37,11 +37,10 @@ test="first commit without hooks"
 _it; _commit
 [ "$?" == 0 ] || _failed
 
+$MY_DIR/main.sh init $HOOKS
+HOOKS_CONFIG=$(git config --get core.hooksPath | sed -e 's/^\([A-Z]\):/\/\1/' | tr '[:upper:]' '[:lower:]')
 test="init"
 _it
-$MY_DIR/main.sh $HOOKS
-
-HOOKS_CONFIG=$(git config --get core.hooksPath | sed -e 's/^\([A-Z]\):/\/\1/' | tr '[:upper:]' '[:lower:]')
 [ "$HOOKS_CONFIG" == $(echo "$MY_DIR/hooks" | tr '[:upper:]' '[:lower:]') ] \
 ||  _failed "$HOOKS_CONFIG != $MY_DIR/hooks"
 
