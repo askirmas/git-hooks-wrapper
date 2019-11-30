@@ -7,7 +7,7 @@ for subdir in $(echo $subdirs | xargs); do
   test -f "$MY_DIR/$subdir/$CMD"
   if [ $? == 0 ]
   then
-    $MY_DIR/$subdir/$CMD $@ >&1
+    $MY_DIR/$subdir/$CMD $@ 
     exit $?
   fi
 done

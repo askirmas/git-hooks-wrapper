@@ -24,7 +24,7 @@ trap _unstash TERM
 trap _unstash KILL
 trap _unstash INT
 
-$HOOK $@>&1
+$HOOK $@
 RESULT=$?
 [ $RESULT == "0" ] && git add .
 

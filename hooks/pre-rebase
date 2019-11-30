@@ -1,6 +1,6 @@
 #!/bin/bash
 . $(dirname "$0")/../hooks_common
 
-$HOOK $@ >&1
+$HOOK $@ 
 
 _exit $?
