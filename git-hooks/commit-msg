@@ -1,10 +1,14 @@
 #!/bin/bash
-MSG=$(cat "$1") 
-# TODO: check for amend. options: without last, not -all but origin
-SAME=$(git log --all --grep="$MSG" --regexp-ignore-case --fixed-strings --max-count 1)
-[ -z "$SAME" ] && exit 0;
 
-echo "Duplicated name"
-echo "$SAME"
-#TODO Re-edit until message will not be empty
-exit 1
+while [ 1 ]; do
+  MSG=$(cat "$1") 
+  [ -z "$MSG" ] && echo "Aborted" && exit 1
+  # TODO: check for amend. options: without last, not -all but origin
+  SAME=$(git log --all --grep="$MSG" --regexp-ignore-case --fixed-strings --max-count 1)
+  [ -z "$SAME" ] && exit 0;
+
+  echo "Duplicated message '$MSG'"
+  echo "$SAME"
+  $(git config core.editor) "$1"
+  [ "$?" == 1 ] && exit 1
+done
