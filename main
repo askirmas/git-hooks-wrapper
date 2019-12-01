@@ -15,7 +15,7 @@ done
 echo "Unknown command. Available:"
 for subdir in $(echo $subdirs | xargs); do
   echo "# $subdir:" | tr '[:lower:]' '[:upper:]';
-  find "./$subdir" -type f -exec basename {} \; | sort | sed 's/^/- /'
+  find "$MY_DIR/$subdir" -type f -exec basename {} \; | sort | sed 's/^/- /'
 done
 
 exit 1
