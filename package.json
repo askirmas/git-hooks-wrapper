@@ -4,15 +4,15 @@
   "private": false,
   "description": "Wrapper scripts for Git Hooks",
   "bin": {
-    "git-hooks-wrapper":  "./main",
-    "ghw": "./main"
+    "git-hooks-wrapper":  "./ghw",
+    "ghw": "./ghw"
   },
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
     "test": "bash scripts/test",
     "release": "npx np",
-    "postinstall": "bash main init"
+    "postinstall": "npx ghw init"
   },
   "repository": {
     "type": "git",
@@ -41,7 +41,7 @@
     "testing"
   ],
   "files": [
-    "main",
+    "ghw",
     "hooks",
     "scripts",
     "utils",

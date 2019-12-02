@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ $(./main getbranch) == master ]
+if [ $(./ghw getbranch) == master ]
 then 
   ./scripts/test
 fi

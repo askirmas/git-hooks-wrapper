@@ -2,7 +2,7 @@
 reset=\\033[0m
 
 HOOKS=$(cat hooks_dir)
-./main init $HOOKS
+./ghw init $HOOKS
 
 _it() {
   echo -e "\033[1;30;43m TEST \033[0m \033[1;4m$test$reset"
@@ -39,7 +39,7 @@ _it; _commit
 [ "$?" == 0 ] && _passed || _failed
 
 test="init"
-_it; $MY_DIR/main init $HOOKS && _passed || _failed
+_it; $MY_DIR/ghw init $HOOKS && _passed || _failed
 
 cp -pf "$MY_DIR/tests/exit0.sh" "$HOOKS/pre-commit"
 git add .

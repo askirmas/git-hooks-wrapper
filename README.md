@@ -16,14 +16,14 @@ Make usage of git hooks easy in project of any programming language and any plat
 After install automatically runs `init` wrapping `$PWD/git-hooks` folder by default. Folder can be changed by running pattern
 
 ``` bash
-$ $main init $hooksDirecotory
+$ $ghw init $hooksDirecotory
 ```
 
 This project uses itself so use [./git-hooks](./git-hooks) as examples
 
 In addition to [init](./scripts/init) and hooks there are several useful scripts in [./utils](./utils) that can be run with pattern
 ```bash
-$ $main $command $@
+$ $ghw $command $@
 ```
 ## Wrappers Functionality
 
@@ -34,7 +34,7 @@ Removes untracked files and recovers them afterwards. I.e. ensures that test are
 ## Commands list
 
 ```bash
-$ $main
+$ $ghw
 # SCRIPTS:
 - init
 - test

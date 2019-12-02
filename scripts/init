@@ -1,6 +1,6 @@
 #!/bin/bash
 DIR=$(dirname "$(dirname "$(realpath "$0")")")
-$($DIR/main git-config)
+$($DIR/ghw git-config)
 
 WRAPPERS_PATH="$DIR/hooks"
 WRAPPERS_PATH_INSENS=$(echo $WRAPPERS_PATH | tr '[:upper:]' '[:lower:]')
