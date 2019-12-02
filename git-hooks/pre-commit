@@ -1,6 +1,3 @@
 #!/bin/bash
-if [ $(./ghw getbranch) == master ]
-then 
-  ./test
-fi
+[ $(./ghw getbranch) != master ] || ./test
 exit $?
