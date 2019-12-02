@@ -4,8 +4,7 @@ CMD="$1"; shift
 subdirs="scripts hooks utils"
 
 for subdir in $(echo $subdirs | xargs); do
-  test -f "$MY_DIR/$subdir/$CMD"
-  if [ $? == 0 ]
+  if [ -f "$MY_DIR/$subdir/$CMD" ]
   then
     $MY_DIR/$subdir/$CMD $@ 
     exit $?
