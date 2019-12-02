@@ -3,7 +3,10 @@
   "version": "0.4.2",
   "private": false,
   "description": "Wrapper scripts for Git Hooks",
-  "bin": "./main",
+  "bin": {
+    "git-hooks-wrapper":  "./main",
+    "ghw": "./main"
+  },
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
