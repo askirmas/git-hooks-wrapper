@@ -12,7 +12,7 @@
   "scripts": {
     "test": "bash scripts/test",
     "release": "npx np",
-    "postinstall": "npx ghw init"
+    "postinstall": "bash ghw init"
   },
   "repository": {
     "type": "git",
