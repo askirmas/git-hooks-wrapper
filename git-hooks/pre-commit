@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ $(./ghw getbranch) == master ]
 then 
-  ./scripts/test
+  ./test
 fi
 exit $?

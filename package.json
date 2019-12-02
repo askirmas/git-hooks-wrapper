@@ -10,7 +10,7 @@
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
-    "test": "bash scripts/test",
+    "test": "bash test",
     "release": "npx np",
     "postinstall": "bash ghw init"
   },

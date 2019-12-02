@@ -22,7 +22,6 @@ _failed() {
 }
 
 MY_DIR=$(dirname "$(realpath "$0")")
-MY_DIR=$(realpath "$MY_DIR/..")
 REPO="repo"
 
 rm -rf $REPO
