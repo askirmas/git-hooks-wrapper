@@ -1,0 +1,3 @@
+#!/bin/bash
+DIR=$(dirname "$(realpath "$0")")
+grep -Po 'version":\s*"\K[0-9\.-]+' "$DIR/../package.json" 

@@ -1,0 +1,32 @@
+#!/bin/bash
+DIR=$(dirname "$(dirname "$(realpath "$0")")")
+$($DIR/ghw git-config)
+
+WRAPPERS_PATH="$DIR/hooks"
+WRAPPERS_PATH_INSENS=$(echo $WRAPPERS_PATH | tr '[:upper:]' '[:lower:]')
+
+HOOKS_PATH="${1:-git-hooks}"
+
+echo -n "$HOOKS_PATH" > "$WRAPPERS_PATH/../hooks_dir"
+
+CONFIGED=$(git config --get core.hooksPath | \
+sed -e 's/^\([A-Z]\):/\/\1/' | \
+tr '[:upper:]' '[:lower:]')
+
+[ -z "$CONFIGED" ] || [ -z "$1" ] && [ "$CONFIGED" != "$WRAPPERS_PATH_INSENS" ] && \
+cp -rnp "$CONFIGED" "$HOOKS_PATH" 
+
+git config --includes core.hooksPath "$WRAPPERS_PATH"
+# Windows MINGW stuff
+CONFIGED=$(git config --get core.hooksPath | \
+sed -e 's/^\([A-Z]\):/\/\1/' | \
+tr '[:upper:]' '[:lower:]')
+
+if [ "$CONFIGED" == "$WRAPPERS_PATH_INSENS" ]
+then
+  echo "Wrapped git hooks in folder '$HOOKS_PATH'"
+  exit 0
+else 
+  echo "hooksPathPath wasn't applied - received '$CONFIGED'.\nRun manually: git config core.hooksPath \"$WRAPPERS_PATH\""
+  exit 1
+fi

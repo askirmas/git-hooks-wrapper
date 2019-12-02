@@ -1,7 +1,7 @@
 #!/bin/bash
 MY_DIR=$(dirname "$(realpath "$0")")
 CMD="$1"; shift
-subdirs="scripts hooks utils"
+subdirs="commands hooks utils"
 
 for subdir in $(echo $subdirs | xargs); do
   if [ -f "$MY_DIR/$subdir/$CMD" ]

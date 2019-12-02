@@ -1,0 +1,5 @@
+#!/bin/bash
+git config include.path ../.gitconfig
+[ -z "$1" ] || cp -pf "$1/.git/config" .gitconfig
+
+exit $?

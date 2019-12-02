@@ -21,7 +21,7 @@ $ $ghw init $hooksDirecotory
 
 This project uses itself so use [./git-hooks](./git-hooks) as examples
 
-In addition to [init](./scripts/init) and hooks there are several useful scripts in [./utils](./utils) that can be run with pattern
+In addition to [init](./commands/init) and hooks there are several useful scripts in [./utils](./utils) that can be run with pattern
 ```bash
 $ $ghw $command $@
 ```
