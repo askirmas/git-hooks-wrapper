@@ -1,10 +1,10 @@
 {
   "name": "git-hooks-wrapper",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": false,
   "description": "Wrapper scripts for Git Hooks",
   "bin": {
-    "git-hooks-wrapper":  "./ghw",
+    "git-hooks-wrapper": "./ghw",
     "ghw": "./ghw"
   },
   "dependencies": {},
