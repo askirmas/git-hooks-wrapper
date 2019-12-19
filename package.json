@@ -43,7 +43,7 @@
   "files": [
     "ghw",
     "hooks",
-    "scripts",
+    "commands",
     "utils",
     "hooks_common",
     "hooks_dir"
