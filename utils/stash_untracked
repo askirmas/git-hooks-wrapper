@@ -1,4 +1,5 @@
 #!/bin/bash
 git stash push -q --keep-index --include-untracked -m "$1" && \
+git clean -fd  && \
 git ls-files -z --others --exclude-standard | xargs -0 rm -rf
 exit $?
