@@ -1,0 +1,71 @@
+#!/bin/bash
+command=$1
+
+if [[ $1 == pre* ]]
+then
+  command=$(echo "$1" | cut -c4-)
+  isNotPre=false
+  withPre="(\-[0-9]+)?"
+else
+  command=$1
+  isNotPre=true
+  withPre=""
+fi
+
+latest=$({
+  [ ! -t 0 ] && echo "$(</dev/stdin)" || git tag --sort=-v:refname
+} | {
+  # Take the first satisfing entry
+  egrep "^v[0-9]+(\.[0-9]+){0,2}$withPre$" | head -1
+} | {
+  # Strip leading 'v'
+  cut -c2-
+})
+
+if [ -z $latest ]; then
+  echo "No satisfied tag was found"
+  exit 1
+fi
+
+major=$(echo "$latest" | cut -d . -f1)
+minor=$(echo "$latest" | cut -d . -f2)
+patch=$(echo "$latest" | cut -d . -f3)
+prerelease=0
+
+case $command in
+  'major')
+    major=$(($major + 1))
+  ;;
+  'minor')
+    minor=$(($minor + 1))
+  ;;
+  'patch')
+    patch=$(($patch + 1))
+  ;;
+  'release')
+    if $isNotPre; then
+      echo "Unknown command '$release'"
+      exit 1
+    fi
+    prerelease=$(echo "$latest" | cut -s -d - -f2)
+    if [ -z "$prerelease" ]
+    then
+      patch=$(($patch + 1))
+      prerelease=0
+    else
+      prerelease=$(($prerelease + 1))
+    fi
+  ;;
+  *)
+    echo "Unknown command '$command'"
+    exit 1
+  ;;
+esac
+
+core="$major.$minor.$patch"
+if $isNotPre
+then
+  echo "$core"
+else
+  echo "$core-$prerelease"
+fi
