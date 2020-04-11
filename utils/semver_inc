@@ -1,57 +1,90 @@
 #!/bin/bash
 command=$1
 
+
+_getLatest() {
+  if [ -z "$2" ]
+  then
+    local withPre="" 
+  else
+    local withPre="(\-[0-9]+)?"
+  fi
+
+  {
+    [ ! -t 0 ] && echo "$1" || git tag --sort=-v:refname
+  } | {
+    # Take the first satisfing entry
+    egrep "^v?[0-9]+(\.[0-9]+){0,2}$withPre$" | head -1
+  } | {
+    # Strip 'v'-s
+    cut -d v -f2
+  }
+}
+
 if [[ $1 == pre* ]]
 then
   command=$(echo "$1" | cut -c4-)
-  isNotPre=false
-  withPre="(\-[0-9]+)?"
+  willBePre="1"
 else
   command=$1
-  isNotPre=true
-  withPre=""
+  willBePre=""
 fi
 
-latest=$({
-  [ ! -t 0 ] && echo "$(</dev/stdin)" || git tag --sort=-v:refname
-} | {
-  # Take the first satisfing entry
-  egrep "^v[0-9]+(\.[0-9]+){0,2}$withPre$" | head -1
-} | {
-  # Strip leading 'v'
-  cut -c2-
-})
+# $(</dev/stdin) $(cat) $(less <&0)
+# Check from https://stackoverflow.com/a/28786207 
+# file=${1--} # POSIX-compliant; ${1:--} can be used either.
+input=$(less <&0)
 
-if [ -z $latest ]; then
+# Attempt to find pre-less version
+latest=$(_getLatest "$input" "$willBePre")
+
+if [ -z "$latest" ] && { [ -z "$2" ]; }; then
+  latest=$(_getLatest "$input" "1")
+fi
+
+if [ -z "$latest" ]; then
   echo "No satisfied tag was found"
   exit 1
 fi
 
 major=$(echo "$latest" | cut -d . -f1)
 minor=$(echo "$latest" | cut -d . -f2)
-patch=$(echo "$latest" | cut -d . -f3)
-prerelease=0
+patchAndPre=$(echo "$latest" | cut -d . -f3)
+patch=$(echo "$patchAndPre" | cut -d - -f1)
+prerelease=$(echo "$patchAndPre" | cut -s -d - -f2)
 
 case $command in
   'major')
-    major=$(($major + 1))
+    if { [ -z "$prerelease" ] || [ ! -z "$willBePre" ] || [ "$patch" -ne "0" ] || [ "$minor" -ne "0" ]; }; then
+      major=$(($major + 1))
+    fi
+    minor=0
+    patch=0
+    prerelease=0
   ;;
   'minor')
-    minor=$(($minor + 1))
+    if { [ -z "$prerelease" ] || [ ! -z "$willBePre" ] || [ "$patch" -ne "0" ]; }; then
+      minor=$(($minor + 1))
+    fi
+    patch=0
+    prerelease=0
   ;;
   'patch')
-    patch=$(($patch + 1))
+    if { [ -z "$prerelease" ] || [ ! -z "$willBePre" ]; }; then
+      patch=$(($patch + 1))
+    fi
+    prerelease=0
   ;;
   'release')
-    if $isNotPre; then
+    if [ -z "$willBePre" ]; then
       echo "Unknown command '$release'"
       exit 1
     fi
-    prerelease=$(echo "$latest" | cut -s -d - -f2)
+ 
     if [ -z "$prerelease" ]
     then
-      patch=$(($patch + 1))
       prerelease=0
+      patch=$(($patch + 1))
     else
       prerelease=$(($prerelease + 1))
     fi
@@ -63,9 +96,12 @@ case $command in
 esac
 
 core="$major.$minor.$patch"
-if $isNotPre
+
+if [ -z "$willBePre" ]
 then
   echo "$core"
 else
-  echo "$core-$prerelease"
+  pre=${prerelease:-0}
+  echo "$core-$pre"
 fi
+

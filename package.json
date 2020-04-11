@@ -8,7 +8,15 @@
     "ghw": "./ghw"
   },
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "@types/node": "^13.11.1",
+    "@types/semver": "^7.1.0",
+    "jest": "^25.3.0",
+    "semver": "^7.2.2",
+    "ts-jest": "^25.3.1",
+    "typescript": "^3.8.3"
+  },
   "scripts": {
     "test": "bash test",
     "release": "npx np",
