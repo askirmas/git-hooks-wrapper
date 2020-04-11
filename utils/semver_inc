@@ -11,7 +11,7 @@ _getLatest() {
   fi
 
   {
-    [ ! -t 0 ] && echo "$1" || git tag --sort=-v:refname
+    echo "$1"
   } | {
     # Take the first satisfing entry
     egrep "^v?[0-9]+(\.[0-9]+){0,2}$withPre$" | head -1
@@ -33,7 +33,7 @@ fi
 # $(</dev/stdin) $(cat) $(less <&0)
 # Check from https://stackoverflow.com/a/28786207 
 # file=${1--} # POSIX-compliant; ${1:--} can be used either.
-input=$(less <&0)
+input=$([ ! -t 0 ] && less <&0 || git tag --sort=-v:refname)
 
 # Attempt to find pre-less version
 latest=$(_getLatest "$input" "$willBePre")
