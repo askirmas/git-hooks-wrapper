@@ -1,6 +1,4 @@
 #!/bin/bash
-command=$1
-
 
 _getLatest() {
   if [ -z "$2" ]
@@ -21,6 +19,54 @@ _getLatest() {
   }
 }
 
+_semver() {
+  command=$1
+  willBePre=$2
+  case $command in
+    'major')
+      if { [ -z "$prerelease" ] || [ ! -z "$willBePre" ] || [ "$patch" -ne "0" ] || [ "$minor" -ne "0" ]; }; then
+        major=$(($major + 1))
+      fi
+      minor=0
+      patch=0
+      prerelease=0
+    ;;
+    'minor')
+      if { [ -z "$prerelease" ] || [ ! -z "$willBePre" ] || [ "$patch" -ne "0" ]; }; then
+        minor=$(($minor + 1))
+      fi
+      patch=0
+      prerelease=0
+    ;;
+    'patch')
+      if { [ -z "$prerelease" ] || [ ! -z "$willBePre" ]; }; then
+        patch=$(($patch + 1))
+      fi
+      prerelease=0
+    ;;
+    'release')
+      if [ -z "$willBePre" ]; then
+        echo "Unknown command '$release'"
+        exit 1
+      fi
+  
+      if [ -z "$prerelease" ]
+      then
+        prerelease=0
+        patch=$(($patch + 1))
+      else
+        prerelease=$(($prerelease + 1))
+      fi
+    ;;
+    *)
+      echo "Unknown command '$command'"
+      exit 1
+    ;;
+  esac
+}
+
+command=$1
+
 if [[ $1 == pre* ]]
 then
   command=$(echo "$1" | cut -c4-)
@@ -30,15 +76,15 @@ else
   willBePre=""
 fi
 
-# $(</dev/stdin) $(cat) $(less <&0)
+# Ways: $(</dev/stdin) $(cat) $(less <&0)
 # Check from https://stackoverflow.com/a/28786207 
 # file=${1--} # POSIX-compliant; ${1:--} can be used either.
 input=$([ ! -t 0 ] && less <&0 || git tag --sort=-v:refname)
 
-# Attempt to find pre-less version
 latest=$(_getLatest "$input" "$willBePre")
 
-if [ -z "$latest" ] && { [ -z "$2" ]; }; then
+if [ -z "$latest" ] && { [ -z "$willBePre" ]; }; then
+  # Attempt to find pre-less version
   latest=$(_getLatest "$input" "1")
 fi
 
@@ -54,46 +100,20 @@ patch=$(echo "$patchAndPre" | cut -d - -f1)
 prerelease=$(echo "$patchAndPre" | cut -s -d - -f2)
 
 case $command in
-  'major')
-    if { [ -z "$prerelease" ] || [ ! -z "$willBePre" ] || [ "$patch" -ne "0" ] || [ "$minor" -ne "0" ]; }; then
-      major=$(($major + 1))
-    fi
-    minor=0
-    patch=0
-    prerelease=0
+  'product')
+    command="major"
   ;;
-  'minor')
-    if { [ -z "$prerelease" ] || [ ! -z "$willBePre" ] || [ "$patch" -ne "0" ]; }; then
-      minor=$(($minor + 1))
-    fi
-    patch=0
-    prerelease=0
+  'feature')
+    command="minor"
   ;;
-  'patch')
-    if { [ -z "$prerelease" ] || [ ! -z "$willBePre" ]; }; then
-      patch=$(($patch + 1))
-    fi
-    prerelease=0
-  ;;
-  'release')
-    if [ -z "$willBePre" ]; then
-      echo "Unknown command '$release'"
-      exit 1
-    fi
- 
-    if [ -z "$prerelease" ]
-    then
-      prerelease=0
-      patch=$(($patch + 1))
-    else
-      prerelease=$(($prerelease + 1))
-    fi
-  ;;
-  *)
-    echo "Unknown command '$command'"
-    exit 1
-  ;;
+  'hotfix')
+    command="patch"
+  ;;  
 esac
+
+_semver "$command" "$willBePre"
+
+[ $? -ne "0" ] && exit 1
 
 core="$major.$minor.$patch"
 

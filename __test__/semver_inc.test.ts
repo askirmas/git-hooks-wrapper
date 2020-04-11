@@ -1,30 +1,49 @@
 import semver from "semver"
 import { execSync } from "child_process"
 
-const semverCommands = ["major", "minor", "patch", "premajor", "preminor", "prepatch", "prerelease"] as const
+const semverCommands = [
+  "major", "minor", "patch",
+  "premajor", "preminor", "prepatch",
+  "prerelease",
+] as const
+, mySemverCommands = [
+  "product", "feature", "hotfix",
+  "preproduct", "prefeature", "prehotfix",
+  ...semverCommands
+] as const
+
 type iSemverInc = typeof semverCommands[number]
+type iMySemverInc = typeof mySemverCommands[number]
 
 describe(semver_inc.name, () => {
   describe('validation', () => {
     const coreNumbers = [0, 1]
-    for (const command of semverCommands)
+    for (const commandIndex in semverCommands)
       for (const major of coreNumbers)
         for (const minor of coreNumbers)
           for (const patch of coreNumbers)
             for (const prerelease of coreNumbers.map(v => v ? `-${v}` : '')) {
               const version = [major, minor, patch].join('.') + prerelease
+              , vVersion = `${
+                Math.random() > 0.5 ? 'v' : ''
+              }${
+                version
+              }`
+              , command = semverCommands[commandIndex]
 
-              it(`${command} ${version}`, () => expect(semver_inc(
-                command, [
-                  `${
-                    Math.random() > 0.5 ? 'v' : ''
-                  }${
-                    version
-                  }`
-              ]
-              )).toBe(
-                semver.inc(version, command)
-              ))
+              it(`${command} ${version}`, () => {
+                expect(semver_inc(
+                  command, [vVersion]
+                )).toBe(
+                  semver.inc(version, command)
+                )
+                if (commandIndex !== `${semverCommands.length - 1}`)
+                  expect(semver_inc(
+                    mySemverCommands[commandIndex], [vVersion]
+                  )).toBe(
+                    semver.inc(version, command)
+                  )
+              })
             }
   })
 
@@ -58,22 +77,40 @@ describe(semver_inc.name, () => {
     ))
 
     describe.skip("#23 prefeature", () => {
-      const start = "1.1.0"
-      , scenario: [iSemverInc, string][] = [
-        ["prefeature" as iSemverInc, "1.2.0-0"],
-        ["patch", "v1.1.1"],
-        ["prefeature" as iSemverInc, "1.2.0-1"],
-      ]
-  
-      for (let i = 0; i < scenario.length; i++)
-        it(scenario[i].join(' '), () => expect(semver_inc(
-          scenario[i][0],
-          [start, ...get2nds(scenario.slice(0, i))]
-          .sort(semverSort)
-        )).toBe(
-          _v(scenario[i][1])
-        ))
-  
+      it("0.1.0", () => expect(semver_inc(
+        "prefeature",
+        ["0.1.0"]
+      )).toBe("0.2.0-0"))
+      it("0.1.1", () => expect(semver_inc(
+        "prefeature",
+        ["0.1.1"]
+      )).toBe("0.2.0-0"))
+      it("0.2.0-0", () => expect(semver_inc(
+        "prefeature",
+        ["0.2.0-0"]
+      )).toBe("0.2.0-1"))
+      it("0.2.1-0", () => expect(semver_inc(
+        "prefeature",
+        ["0.2.1-0"]
+      )).toBe("0.3.0-1"))
+
+      describe.skip("scenario", () => {
+        const start = "1.1.0"
+        , scenario: [iSemverInc, string][] = [
+          ["prefeature" as iSemverInc, "1.2.0-0"],
+          ["patch", "v1.1.1"],
+          ["prefeature" as iSemverInc, "1.2.0-1"],
+        ]
+    
+        for (let i = 0; i < scenario.length; i++)
+          it(scenario[i].join(' '), () => expect(semver_inc(
+            scenario[i][0],
+            [start, ...get2nds(scenario.slice(0, i))]
+            .sort(semverSort)
+          )).toBe(
+            _v(scenario[i][1])
+          ))
+      })  
     })
   })
   
@@ -86,7 +123,7 @@ describe(semver_inc.name, () => {
   })
 })
 
-function semver_inc(inc: iSemverInc, tags: string[]) {
+function semver_inc(inc: iMySemverInc, tags: string[]) {
   return execSync(`echo "${tags.join("\n")}" | xargs -d \\n -n1 echo | ./utils/semver_inc ${inc}`)
   .toString()
   .replace(/\n$/, '')
