@@ -24,11 +24,7 @@ describe(semver_inc.name, () => {
           for (const patch of coreNumbers)
             for (const prerelease of coreNumbers.map(v => v ? `-${v}` : '')) {
               const version = [major, minor, patch].join('.') + prerelease
-              , vVersion = `${
-                Math.random() > 0.5 ? 'v' : ''
-              }${
-                version
-              }`
+              , vVersion = withV(version)
               , command = semverCommands[commandIndex]
 
               it(`${command} ${version}`, () => {
@@ -49,35 +45,71 @@ describe(semver_inc.name, () => {
 
   describe("scenario 1", () => {
     const start = "1.0.0"
-    , scenario: [iSemverInc, string][] = [
-      ["minor", "v1.1.0"],
-      ["patch", "v1.1.1"],
-      ["preminor", "1.2.0-0"],
-      ["patch", "v1.1.2"],
-      ["prerelease", "1.2.0-1"],
-      ["patch", "v1.1.3"],
-      ["minor", "1.2.0"]
+    , scenario: [[iSemverInc, iMySemverInc|"prerelease"], [string, string]][] = [
+      [
+        ["minor", "feature"], ["1.1.0", "1.1.0"]
+      ],
+      [
+        ["patch", "hotfix"], ["1.1.1", "1.1.1"]
+      ],
+      [
+        ["preminor", "prefeature"], ["1.2.0-0", "1.2.0-0"]
+      ],
+      [
+        ["patch", "hotfix"], ["1.2.0", "1.1.2"]
+      ],
+      [
+        //TODO: prefeature #23
+        ["prerelease", "prerelease"], ["1.2.1-0", "1.2.0-1"]
+      ],
+      [
+        ["patch", "hotfix"], ["1.2.1", "1.1.3"]
+      ],
+      [
+        ["minor", "feature"], ["1.3.0", "1.2.0"]
+      ],
     ]
 
-    for (let i = 0; i < scenario.length; i++)
-      it(scenario[i].join(' '), () => expect(semver_inc(
-        scenario[i][0],
-        [start, ...get2nds(scenario.slice(0, i))]
-        .sort(semverSort)
-      )).toBe(
-        _v(scenario[i][1])
-      ))
+    for (let i = 0; i < scenario.length; i++) {
+      const versionsList = [start, ...get2nds(get2nds(scenario.slice(0, i)))]
+      .sort(semverSort)
+      .map(withV)
+      , command = scenario[i][0][0]
+
+      for (const way of [0, 1])
+        (
+          way ? it : it.skip
+        )(
+          scenario[i][0][way],
+          () => {
+            expect(semver.inc(
+              i === 0
+              ? start
+              : scenario[i - 1][1][0],
+              command
+            )).toBe(
+              scenario[i][1][0]
+            )
+            expect(semver_inc(
+              scenario[i][0][way],
+              versionsList
+            )).toBe(
+              scenario[i][1][way]
+            )
+          }
+        )
+    }
 
     it.skip("#22 with prerelease", () => expect(semver_inc(
-      scenario[3][0],
-      [start, ...get2nds(scenario.slice(0, 3))]
+      scenario[3][0][0],
+      [start, ...get2nds(get2nds(scenario.slice(0, 3)))]
       .sort(semverSort)
     )).toStrictEqual(
-      get2nds(scenario.slice(3, 5))
+      get2nds(get2nds(scenario.slice(3, 5)))
       .map(_v)
     ))
 
-    describe.skip("#23 prefeature", () => {
+    describe("#23 prefeature", () => {
       it("0.1.0", () => expect(semver_inc(
         "prefeature",
         ["0.1.0"]
@@ -86,25 +118,30 @@ describe(semver_inc.name, () => {
         "prefeature",
         ["0.1.1"]
       )).toBe("0.2.0-0"))
-      it("0.2.0-0", () => expect(semver_inc(
+      it.skip("0.2.0-0", () => expect(semver_inc(
         "prefeature",
         ["0.2.0-0"]
       )).toBe("0.2.0-1"))
-      it("0.2.1-0", () => expect(semver_inc(
+      it.skip("0.2.1-0", () => expect(semver_inc(
         "prefeature",
         ["0.2.1-0"]
       )).toBe("0.3.0-1"))
 
-      describe.skip("scenario", () => {
+      describe("scenario", () => {
         const start = "1.1.0"
         , scenario: [iSemverInc, string][] = [
           ["prefeature" as iSemverInc, "1.2.0-0"],
           ["patch", "v1.1.1"],
           ["prefeature" as iSemverInc, "1.2.0-1"],
         ]
+        , {length} = scenario
     
-        for (let i = 0; i < scenario.length; i++)
-          it(scenario[i].join(' '), () => expect(semver_inc(
+        for (let i = 0; i < length; i++)
+          (
+            i === length - 1
+            ? it.skip
+            : it
+          )(scenario[i].join(' '), () => expect(semver_inc(
             scenario[i][0],
             [start, ...get2nds(scenario.slice(0, i))]
             .sort(semverSort)
@@ -138,6 +175,17 @@ function _v(v: string) {
   return v.replace(/^v/, "")
 }
 
+// function get1sts<T>(source: [T][]) {
+//   return source.map(([value]) => value)
+// }
 function get2nds<T>(source: [any, T][]) {
   return source.map(([_, value]) => value)
+}
+
+function withV(v: string) {
+  return `${
+    Math.random() > 0.5 ? 'v' : ''
+  }${
+    v
+  }` 
 }
