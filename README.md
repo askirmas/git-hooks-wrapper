@@ -29,7 +29,7 @@ $ $ghw $command $@
 
 ### pre-commit
 
-Removes untracked files and recovers them afterwards. I.e. ensures that test are running without side-effects. Produced files will be added to index if this step was successful.
+Removes untracked files and recovers them afterwards - ensures that test are running without side-effects. If files was changed (untracked appeared) exists with error.
 
 ## Commands list
 

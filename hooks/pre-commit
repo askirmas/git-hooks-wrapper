@@ -24,9 +24,9 @@ trap _unstash TERM
 trap _unstash KILL
 trap _unstash INT
 
-$HOOK $@
+# TODO Add untracked notification 
+$HOOK $@ && git ls-files --others --error-unmatch --exclude-standard
 RESULT=$?
-[ $RESULT == "0" ] && git add .
 
 _unstash
 _exit $RESULT
