@@ -13,7 +13,7 @@ const semverCommands = [
 
 type iSemverInc = typeof semverCommands[number]
 type iMySemverInc = typeof mySemverCommands[number]
-type iAllSemverInc = iSemverInc | iMySemverInc
+type iAllSemverInc = iSemverInc | iMySemverInc | "pre_release"
 
 describe(semver_inc.name, () => {
   describe('validation', () => {
@@ -45,59 +45,61 @@ describe(semver_inc.name, () => {
 
   describe("scenario 1", () => {
     const start = "1.0.0"
-    , scenario: [[iSemverInc, iMySemverInc|"prerelease"], [string, string]][] = [
+    , scenario: [[iSemverInc, iMySemverInc|"pre_release"], [string, string]][] = [
       [
-        ["minor", "feature"], ["1.1.0", "1.1.0"]
-      ],
-      [
-        ["patch", "hotfix"], ["1.1.1", "1.1.1"]
-      ],
-      [
-        ["preminor", "prefeature"], ["1.2.0-0", "1.2.0-0"]
-      ],
-      [
-        ["patch", "hotfix"], ["1.2.0", "1.1.2"]
-      ],
-      [
-        //TODO: prefeature #23
-        ["prerelease", "prerelease"], ["1.2.1-0", "1.2.0-1"]
-      ],
-      [
-        ["patch", "hotfix"], ["1.2.1", "1.1.3"]
-      ],
-      [
-        ["minor", "feature"], ["1.3.0", "1.2.0"]
-      ],
+        ["minor", "feature"],
+        ["1.1.0", "1.1.0"]
+      ], [
+        ["patch", "hotfix"],
+        ["1.1.1", "1.1.1"]
+      ], [
+        ["preminor", "prefeature"],
+        ["1.2.0-0", "1.2.0-0"]
+      ], [
+        ["patch", "hotfix"],
+        ["1.2.0", "1.1.2"]
+      ], [
+        ["prerelease", "pre_release" /*TODO prefeature #23*/],
+        ["1.2.1-0", "1.2.0-1"]
+      ], [
+        ["patch", "hotfix"],
+        ["1.2.1", "1.1.3"]
+      ], [
+        ["minor", "feature"],
+        ["1.3.0", "1.2.0"]
+      ]
     ]
 
     for (let i = 0; i < scenario.length; i++) {
-      const versionsList = [start, ...get2nds(get2nds(scenario.slice(0, i)))]
-      .sort(semverSort)
-      .map(withV)
-      , command = scenario[i][0][0]
-
-      for (const way of [0, 1])
-        (
-          way ? it : it.skip
-        )(
-          scenario[i][0][way],
+      for (const way of [0, 1]) {
+        const command = scenario[i][0][way]
+        , result = scenario[i][1][way]
+        , versionsList = [start,
+          ...get2nds(scenario.slice(0, i))
+          .map(v => v[way])
+        ]
+        .sort(semverSort)
+        .map(withV)
+  
+        it(
+          `${command} ${versionsList[0]}`,
           () => {
-            expect(semver.inc(
-              i === 0
-              ? start
-              : scenario[i - 1][1][0],
-              command
-            )).toBe(
-              scenario[i][1][0]
-            )
+            if (way === 0)
+              expect(semver.inc(
+                i === 0 ? start : scenario[i - 1][1][way],
+                command as typeof scenario[number][0][0]
+              )).toBe(
+                result
+              )
             expect(semver_inc(
-              scenario[i][0][way],
+              command,
               versionsList
             )).toBe(
-              scenario[i][1][way]
+              result
             )
           }
         )
+      }
     }
 
     it.skip("#22 with prerelease", () => expect(semver_inc(
@@ -129,10 +131,10 @@ describe(semver_inc.name, () => {
 
       describe("scenario", () => {
         const start = "1.1.0"
-        , scenario: [iSemverInc, string][] = [
-          ["prefeature" as iSemverInc, "1.2.0-0"],
-          ["patch", "v1.1.1"],
-          ["prefeature" as iSemverInc, "1.2.0-1"],
+        , scenario: [iMySemverInc, string][] = [
+          ["prefeature", "1.2.0-0"],
+          ["hotfix", "v1.1.1"],
+          ["prefeature", "1.2.0-1"],
         ]
         , {length} = scenario
     
@@ -175,9 +177,9 @@ function _v(v: string) {
   return v.replace(/^v/, "")
 }
 
-// function get1sts<T>(source: [T][]) {
-//   return source.map(([value]) => value)
-// }
+function get1sts<T>(source: [T][]) {
+  return source.map(([value]) => value)
+}
 function get2nds<T>(source: [any, T][]) {
   return source.map(([_, value]) => value)
 }

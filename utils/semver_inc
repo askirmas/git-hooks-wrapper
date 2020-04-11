@@ -13,7 +13,7 @@ _getLatest() {
   {
     echo "$1"
   } | {
-    # Take the first satisfing entry
+    # Take the first satisfing entry //TODO readline?
     egrep "^v?[0-9]+(\.[0-9]+){0,2}$withPre$" | head -1
   } | {
     # Strip 'v'-s
@@ -70,16 +70,11 @@ _semver() {
 }
 
 command=$1
-
-if [[ $1 == pre* ]]
-then
-  command=$(echo "$1" | cut -c4-)
+willBePre=""
+if [[ $command == pre* ]]; then
+  command=$(echo "$command" | cut -c4-)
   willBePre="1"
-else
-  command=$1
-  willBePre=""
 fi
-
 case $command in
   'product')
     command="major"
@@ -92,17 +87,32 @@ case $command in
   'hotfix')
     command="patch"
     own=1
-  ;;  
+  ;;
+  '_release')
+    command="release"
+    own=1
+  ;;
 esac
 
+if { [ -z "$own" ] || [ ! -z "$willBePre" ]; }; then
+  withPre="1"
+fi
 # Ways: $(</dev/stdin) $(cat) $(less <&0)
 # Check from https://stackoverflow.com/a/28786207 
 # file=${1--} # POSIX-compliant; ${1:--} can be used either.
-input=$([ ! -t 0 ] && less <&0 || git tag --sort=-v:refname)
+if [ ! -z "$2" ]
+then 
+  input="$2"
+elif [ ! -t 0 ]
+then
+  input=$(less <&0)
+else
+  input=$(git tag --sort=-v:refname)
+fi
 
-latest=$(_getLatest "$input" "$willBePre")
+latest=$(_getLatest "$input" "$withPre")
 
-if [ -z "$latest" ] && { [ -z "$willBePre" ]; }; then
+if [ -z "$latest" ] && { [ -z "$withPre" ]; }; then
   # Attempt to find pre-less version
   latest=$(_getLatest "$input" "1")
 fi

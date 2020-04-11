@@ -19,9 +19,9 @@
     "typescript": "^3.8.3"
   },
   "scripts": {
-    "release:product": "np $(./ghw semver_inc major)",
-    "release:feature": "np $(./ghw semver_inc minor)",
-    "release:hotfix": "np $(./ghw semver_inc patch)",
+    "release:product": "np $(./ghw semver_inc product)",
+    "release:feature": "np $(./ghw semver_inc feature)",
+    "release:hotfix": "np $(./ghw semver_inc hotfix)",
     "release": "np",
     "test": "jest --config jest.config.json && bash test",
     "postrelease": "npm update && npm update -D",
