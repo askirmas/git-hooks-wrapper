@@ -13,7 +13,7 @@ const semverCommands = [
 
 type iSemverInc = typeof semverCommands[number]
 type iMySemverInc = typeof mySemverCommands[number]
-type iAllSemverInc = iSemverInc | iMySemverInc | "pre_release"
+type iAllSemverInc = iSemverInc | iMySemverInc
 
 describe(semver_inc.name, () => {
   describe('validation', () => {
@@ -24,28 +24,54 @@ describe(semver_inc.name, () => {
           for (const patch of coreNumbers)
             for (const prerelease of coreNumbers.map(v => v ? `-${v}` : '')) {
               const version = [major, minor, patch].join('.') + prerelease
-              , vVersion = withV(version)
               , command = semverCommands[commandIndex]
 
-              it(`${command} ${version}`, () => {
-                expect(semver_inc(
-                  command, [vVersion]
-                )).toBe(
-                  semver.inc(version, command)
-                )
-                if (mySemverCommands[commandIndex])
-                  expect(semver_inc(
-                    mySemverCommands[commandIndex], [vVersion]
-                  )).toBe(
-                    semver.inc(version, command)
-                  )
-              })
+              it(`${command} ${version}`, () => expect(semver_inc(
+                command, [withV(version)]
+              )).toBe(
+                semver.inc(version, command)
+              ))
             }
+  })
+
+  describe("own words", () => {
+    const suites = {
+      "prehotfix": [
+        ["0.0.0-0", "0.0.0-1"],
+        ["0.0.0",   "0.0.1-0"],
+      ],
+      "prefeature": [
+        ["0.0.0-0", "0.0.0-1"],
+        ["0.0.0",   "0.1.0-0"],
+        ["0.0.1-0", "0.1.0-0"],
+        ["0.0.1",   "0.1.0-0"],
+      ],
+      "preproduct": [
+        ["0.0.0-0", "0.0.0-1"],
+        ["0.0.0",   "1.0.0-0"],
+        ["0.0.1-0", "1.0.0-0"],
+        ["0.0.1",   "1.0.0-0"],
+        ["0.1.0-0", "1.0.0-0"],
+        ["0.1.0",   "1.0.0-0"],
+        ["0.1.1-0", "1.0.0-0"],
+        ["0.1.1",   "1.0.0-0"],
+      ]
+    } as const
+
+    for (const _command in suites) {
+      const command = _command as keyof typeof suites
+      describe(command, () => {
+        for (const [from, to] of suites[command])
+          it(from, () => expect(semver_inc(
+            command, [from]
+          )).toBe(to))
+      })
+    }
   })
 
   describe("scenario 1", () => {
     const start = "1.0.0"
-    , scenario: [[iSemverInc, iMySemverInc|"pre_release"], [string, string]][] = [
+    , scenario: [[iSemverInc, iMySemverInc], [string, string]][] = [
       [
         ["minor", "feature"],
         ["1.1.0", "1.1.0"]
@@ -59,7 +85,7 @@ describe(semver_inc.name, () => {
         ["patch", "hotfix"],
         ["1.2.0", "1.1.2"]
       ], [
-        ["prerelease", "pre_release" /*TODO prefeature #23*/],
+        ["prerelease", "prefeature"],
         ["1.2.1-0", "1.2.0-1"]
       ], [
         ["patch", "hotfix"],
@@ -110,56 +136,14 @@ describe(semver_inc.name, () => {
       get2nds(get2nds(scenario.slice(3, 5)))
       .map(_v)
     ))
-
-    describe("#23 prefeature", () => {
-      it("0.1.0", () => expect(semver_inc(
-        "prefeature",
-        ["0.1.0"]
-      )).toBe("0.2.0-0"))
-      it("0.1.1", () => expect(semver_inc(
-        "prefeature",
-        ["0.1.1"]
-      )).toBe("0.2.0-0"))
-      it.skip("0.2.0-0", () => expect(semver_inc(
-        "prefeature",
-        ["0.2.0-0"]
-      )).toBe("0.2.0-1"))
-      it.skip("0.2.1-0", () => expect(semver_inc(
-        "prefeature",
-        ["0.2.1-0"]
-      )).toBe("0.3.0-1"))
-
-      describe("scenario", () => {
-        const start = "1.1.0"
-        , scenario: [iMySemverInc, string][] = [
-          ["prefeature", "1.2.0-0"],
-          ["hotfix", "v1.1.1"],
-          ["prefeature", "1.2.0-1"],
-        ]
-        , {length} = scenario
-    
-        for (let i = 0; i < length; i++)
-          (
-            i === length - 1
-            ? it.skip
-            : it
-          )(scenario[i].join(' '), () => expect(semver_inc(
-            scenario[i][0],
-            [start, ...get2nds(scenario.slice(0, i))]
-            .sort(semverSort)
-          )).toBe(
-            _v(scenario[i][1])
-          ))
-      })  
-    })
   })
-  
+
   describe("bad command", () => {
-    it("release", () => expect(() => semver_inc(
-      //@ts-ignore,
-      "release",
-      ["v0.1.0"]
-    )).toThrow())
+    for (const badCommand of ["release", "pre_release"])
+      it(badCommand, () => expect(() => semver_inc(
+        badCommand as iAllSemverInc,
+        ["v.1.0"]
+      )).toThrow())
   })
 })
 

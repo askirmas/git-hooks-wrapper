@@ -88,10 +88,6 @@ case $command in
     command="patch"
     own=1
   ;;
-  '_release')
-    command="release"
-    own=1
-  ;;
 esac
 
 if { [ -z "$own" ] || [ ! -z "$willBePre" ]; }; then
@@ -128,7 +124,25 @@ patchAndPre=$(echo "$latest" | cut -d . -f3)
 patch=$(echo "$patchAndPre" | cut -d - -f1)
 prerelease=$(echo "$patchAndPre" | cut -s -d - -f2)
 
+if { [ ! -z "$own" ] && [ ! -z "$willBePre" ] && [ ! -z "$prerelease" ]; }; then
+  case $command in
+    'major')
+      if { [ "$patch" -eq "0" ] && [ "$minor" -eq "0" ]; }; then
+        command="release"
+      fi
+    ;;
+    'minor')
+      if [ "$patch" -eq '0' ]; then
+        command="release"
+      fi
+    ;;
+    'patch')
+      command="release"
+    ;;
+  esac
+fi
 _semver "$command" "$willBePre"
+
 
 [ $? -ne "0" ] && exit 1
 
