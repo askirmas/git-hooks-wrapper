@@ -55,6 +55,7 @@ describe(semver_inc.name, () => {
     }
   })
 
+  //TODO Node setup...
   it.skip(`major git`, () => expect(semver_inc(
     "major"
   )).toBe(semver.inc(
@@ -96,6 +97,7 @@ describe(semver_inc.name, () => {
     }
   })
 
+  //TODO extend with feature@preproduct
   describe("scenario 1", () => {
     const start = "1.0.0"
     , scenario: [[iSemverInc, iMySemverInc], [string, string]][] = [
