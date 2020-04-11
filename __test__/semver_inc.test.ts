@@ -56,6 +56,25 @@ describe(semver_inc.name, () => {
       get2nds(scenario.slice(3, 5))
       .map(_v)
     ))
+
+    describe.skip("#23 prefeature", () => {
+      const start = "1.1.0"
+      , scenario: [iSemverInc, string][] = [
+        ["prefeature" as iSemverInc, "1.2.0-0"],
+        ["patch", "v1.1.1"],
+        ["prefeature" as iSemverInc, "1.2.0-1"],
+      ]
+  
+      for (let i = 0; i < scenario.length; i++)
+        it(scenario[i].join(' '), () => expect(semver_inc(
+          scenario[i][0],
+          [start, ...get2nds(scenario.slice(0, i))]
+          .sort(semverSort)
+        )).toBe(
+          _v(scenario[i][1])
+        ))
+  
+    })
   })
   
   describe("bad command", () => {
