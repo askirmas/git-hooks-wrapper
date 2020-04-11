@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# @param $1 {string[]} input  
+# @param $2 {empty} withPre   
 _getLatest() {
   if [ -z "$2" ]
   then
@@ -19,6 +21,8 @@ _getLatest() {
   }
 }
 
+# @param $1 {major|minor|patch|release} command
+# @param $2 {empty} willBePre
 _semver() {
   command=$1
   willBePre=$2
@@ -76,6 +80,21 @@ else
   willBePre=""
 fi
 
+case $command in
+  'product')
+    command="major"
+    own=1
+  ;;
+  'feature')
+    command="minor"
+    own=1
+  ;;
+  'hotfix')
+    command="patch"
+    own=1
+  ;;  
+esac
+
 # Ways: $(</dev/stdin) $(cat) $(less <&0)
 # Check from https://stackoverflow.com/a/28786207 
 # file=${1--} # POSIX-compliant; ${1:--} can be used either.
@@ -98,18 +117,6 @@ minor=$(echo "$latest" | cut -d . -f2)
 patchAndPre=$(echo "$latest" | cut -d . -f3)
 patch=$(echo "$patchAndPre" | cut -d - -f1)
 prerelease=$(echo "$patchAndPre" | cut -s -d - -f2)
-
-case $command in
-  'product')
-    command="major"
-  ;;
-  'feature')
-    command="minor"
-  ;;
-  'hotfix')
-    command="patch"
-  ;;  
-esac
 
 _semver "$command" "$willBePre"
 

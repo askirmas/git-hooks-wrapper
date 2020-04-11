@@ -9,11 +9,11 @@ const semverCommands = [
 , mySemverCommands = [
   "product", "feature", "hotfix",
   "preproduct", "prefeature", "prehotfix",
-  ...semverCommands
 ] as const
 
 type iSemverInc = typeof semverCommands[number]
 type iMySemverInc = typeof mySemverCommands[number]
+type iAllSemverInc = iSemverInc | iMySemverInc
 
 describe(semver_inc.name, () => {
   describe('validation', () => {
@@ -37,7 +37,7 @@ describe(semver_inc.name, () => {
                 )).toBe(
                   semver.inc(version, command)
                 )
-                if (commandIndex !== `${semverCommands.length - 1}`)
+                if (mySemverCommands[commandIndex])
                   expect(semver_inc(
                     mySemverCommands[commandIndex], [vVersion]
                   )).toBe(
@@ -51,10 +51,11 @@ describe(semver_inc.name, () => {
     const start = "1.0.0"
     , scenario: [iSemverInc, string][] = [
       ["minor", "v1.1.0"],
-      ["preminor", "1.2.0-0"],
       ["patch", "v1.1.1"],
-      ["prerelease", "1.2.0-1"],
+      ["preminor", "1.2.0-0"],
       ["patch", "v1.1.2"],
+      ["prerelease", "1.2.0-1"],
+      ["patch", "v1.1.3"],
       ["minor", "1.2.0"]
     ]
 
@@ -123,7 +124,7 @@ describe(semver_inc.name, () => {
   })
 })
 
-function semver_inc(inc: iMySemverInc, tags: string[]) {
+function semver_inc(inc: iAllSemverInc, tags: string[]) {
   return execSync(`echo "${tags.join("\n")}" | xargs -d \\n -n1 echo | ./utils/semver_inc ${inc}`)
   .toString()
   .replace(/\n$/, '')
