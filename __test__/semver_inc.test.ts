@@ -1,5 +1,6 @@
 import semver from "semver"
 import { execSync } from "child_process"
+import {version} from "../package.json"
 
 const semverCommands = [
   "major", "minor", "patch",
@@ -15,24 +16,50 @@ type iSemverInc = typeof semverCommands[number]
 type iMySemverInc = typeof mySemverCommands[number]
 type iAllSemverInc = iSemverInc | iMySemverInc
 
+/**
+ * @param tags Expected desc order in case of `sdtin: string[]`. For `undefined` will be taken list from `git tags` 
+ */
+function semver_inc(inc: iAllSemverInc, tags?: string[] | string) {
+  return execSync(`${
+    // STDIN
+    Array.isArray(tags)
+    ? `echo "${tags.join("\n")}" | xargs -d \\n -n1 echo | `
+    : ''
+  }./utils/semver_inc ${inc} ${
+    // 
+    typeof tags === 'string'
+    ? tags
+    : ''
+  }`)
+  .toString()
+  .replace(/\n$/, '')
+}
+
 describe(semver_inc.name, () => {
   describe('validation', () => {
     const coreNumbers = [0, 1]
-    for (const commandIndex in semverCommands)
+    for (const commandIndex in semverCommands) {
+      const command = semverCommands[commandIndex]
       for (const major of coreNumbers)
         for (const minor of coreNumbers)
           for (const patch of coreNumbers)
             for (const prerelease of coreNumbers.map(v => v ? `-${v}` : '')) {
-              const version = [major, minor, patch].join('.') + prerelease
-              , command = semverCommands[commandIndex]
+              const v = [major, minor, patch].join('.') + prerelease
 
-              it(`${command} ${version}`, () => expect(semver_inc(
-                command, [withV(version)]
-              )).toBe(
-                semver.inc(version, command)
-              ))
+              it(`${command} ${v}`, () => expect(semver_inc(
+                command, withV(v)
+              )).toBe(semver.inc(
+                v, command
+              )))
             }
+    }
   })
+
+  it.skip(`major git`, () => expect(semver_inc(
+    "major"
+  )).toBe(semver.inc(
+    version, "major"
+  )))
 
   describe("own words", () => {
     const suites = {
@@ -147,12 +174,6 @@ describe(semver_inc.name, () => {
   })
 })
 
-function semver_inc(inc: iAllSemverInc, tags: string[]) {
-  return execSync(`echo "${tags.join("\n")}" | xargs -d \\n -n1 echo | ./utils/semver_inc ${inc}`)
-  .toString()
-  .replace(/\n$/, '')
-}
-
 function semverSort(v1: string, v2: string) {
   return v1 === v2 ? 0 : semver.gt(_v(v1), _v(v2)) ? -1 : 1
 }
@@ -161,9 +182,6 @@ function _v(v: string) {
   return v.replace(/^v/, "")
 }
 
-function get1sts<T>(source: [T][]) {
-  return source.map(([value]) => value)
-}
 function get2nds<T>(source: [any, T][]) {
   return source.map(([_, value]) => value)
 }
