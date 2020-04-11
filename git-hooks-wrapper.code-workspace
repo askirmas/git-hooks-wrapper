@@ -6,11 +6,5 @@
 		{
 			"path": "repo"
 		}
-	],
-	"settings": {},
-	"extensions": {
-		"recommendations": [ 
-			"rogalmic.bash-debug"
-		]
-	}
+	]
 }

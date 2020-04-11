@@ -6,5 +6,6 @@
       ],
       "url": "https://askirmas.github.io/jest.schema.json"
     }
-  ]
+  ],
+  "git.rebaseWhenSync": true
 }
