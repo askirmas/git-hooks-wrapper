@@ -68,6 +68,7 @@ $ $ghw
 - getbranch
 - getRefsBranch
 - getRemote
+- semver_inc
 - stash_untracked
 - stats
 ```
