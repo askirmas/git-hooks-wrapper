@@ -42,11 +42,20 @@ describe(semver_inc.name, () => {
     for (let i = 0; i < scenario.length; i++)
       it(scenario[i].join(' '), () => expect(semver_inc(
         scenario[i][0],
-        [start, ...scenario.slice(0, i).map(([_,tag]) => tag)]
+        [start, ...get2nds(scenario.slice(0, i))]
         .sort(semverSort)
       )).toBe(
         _v(scenario[i][1])
       ))
+
+    it.skip("#22 with prerelease", () => expect(semver_inc(
+      scenario[3][0],
+      [start, ...get2nds(scenario.slice(0, 3))]
+      .sort(semverSort)
+    )).toStrictEqual(
+      get2nds(scenario.slice(3, 5))
+      .map(_v)
+    ))
   })
   
   describe("bad command", () => {
@@ -70,4 +79,8 @@ function semverSort(v1: string, v2: string) {
 
 function _v(v: string) {
   return v.replace(/^v/, "")
+}
+
+function get2nds<T>(source: [any, T][]) {
+  return source.map(([_, value]) => value)
 }
