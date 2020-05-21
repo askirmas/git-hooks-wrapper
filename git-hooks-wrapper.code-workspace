@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "repo"
+		},
+		{
+			"path": "sandbox/stashing/repo"
 		}
 	]
 }

@@ -23,7 +23,8 @@
     "release:feature": "np $(./ghw semver_inc feature)",
     "release:hotfix": "np $(./ghw semver_inc hotfix)",
     "release": "np",
-    "test": "jest --config jest.config.json && bash test",
+    "test": "jest && bash test",
+    "test:dev": "jest --watch --onlyFailures",
     "postrelease": "npm update && npm update -D",
     "postinstall": "bash ghw init"
   },

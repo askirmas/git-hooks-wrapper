@@ -1,0 +1,4 @@
+[git-hooks-wrapper]
+	scriptsPath = git-hooks
+[core]
+	hooksPath = ./node_modules/git-hooks-wrapper/hooks

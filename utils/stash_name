@@ -1,0 +1,7 @@
+#!/bin/bash
+name=$1 
+index=$(git stash list -n 1 --grep \'"$name"$\' | grep -oP '^stash@\{[\d]+\}')
+[ -z "$index" ] && exit 1
+
+git stash $@ "$index"
+exit $?
