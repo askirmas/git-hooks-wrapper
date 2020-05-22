@@ -1,6 +1,6 @@
 import semver from "semver"
 import { execSync } from "child_process"
-import {version} from "../package.json"
+import { version } from "../package.json"
 
 const semverCommands = [
   "major", "minor", "patch",

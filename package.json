@@ -9,9 +9,11 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@types/globby": "^9.1.0",
     "@types/jest": "^25.2.1",
     "@types/node": "^13.11.1",
     "@types/semver": "^7.1.0",
+    "globby": "^11.0.0",
     "jest": "^25.3.0",
     "np": "^6.2.0",
     "semver": "^7.2.2",
@@ -23,7 +25,8 @@
     "release:feature": "np $(./ghw semver_inc feature)",
     "release:hotfix": "np $(./ghw semver_inc hotfix)",
     "release": "np",
-    "test": "jest --config jest.config.json && bash test",
+    "test": "jest && bash test",
+    "test:dev": "jest --watch --onlyFailures",
     "postrelease": "npm update && npm update -D",
     "postinstall": "bash ghw init"
   },
