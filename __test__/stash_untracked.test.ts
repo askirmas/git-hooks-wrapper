@@ -4,7 +4,8 @@ import {resolve} from 'path'
 import { writeFsStamp, readFsStamp } from "./utils/fsstamp"
 import git from "./utils/git"
 
-const repoDir = "repo"
+const {values: $values} = Object
+, repoDir = "repo"
 , cwd = process.cwd()
 , scriptName = 'utils/stash_untracked'
 , repoFullDir = resolve(cwd, repoDir)
@@ -79,7 +80,10 @@ describe('stash_untracked', () => {
     it('init', () => {
       writeFsStamp(fss.init)
       expect(
-        git.add('.').commit('init').status()
+        git
+        .add('.')
+        .commit('init')
+        .status()
       ).toContain(
         "nothing to commit, working tree clean"
       )
@@ -122,8 +126,26 @@ describe('stash_untracked', () => {
     })
 
     it('check stash', () => {
-      //TODO check that all are not staged
-      git.stash_branch('stash').checkout('stash').add('.').commit('stash')
+      // No staged
+      expect(
+        git.diff({exitCode: true, nameOnly: true, staged: true})
+      ).toEqual(
+        []
+      )
+      
+      // No not staged
+      expect(
+        git.lsFiles({deleted: true, modified: true, others: true, excludeStandard: true})
+      ).toEqual(
+        []
+      )
+
+      git
+      .stash_branch('stash')
+      .switch('stash')
+      .add('.')
+      .commit('stash')
+      
       return expect(
         readFsStamp()
       ).toStrictEqual(
@@ -134,18 +156,17 @@ describe('stash_untracked', () => {
 
     afterAll(() => {
       process.chdir(cwd)
-      //rmdirSync(repoDir, {recursive: true})
     })
   })
 
   describe('specs', () => {
     it('committed only init and stage', () => expect(
-      [...new Set(Object.values(fss.commited).flat())].sort()
+      [...new Set($values(fss.commited).flat())].sort()
     ).toStrictEqual(
       [content.committed, content.staged].sort()
     ))
     it('//TODO stashed only init and not staged', () => expect(
-      [...new Set(Object.values(fss.stashed).flat())].sort()
+      [...new Set($values(fss.stashed).flat())].sort()
     )
     .not
     .toStrictEqual(
