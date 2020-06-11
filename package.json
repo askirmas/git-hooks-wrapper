@@ -27,8 +27,7 @@
     "release": "np",
     "test": "jest && bash test",
     "test:dev": "jest --watch --onlyFailures",
-    "postrelease": "npm update && npm update -D",
-    "postinstall": "bash ghw init"
+    "postrelease": "npm update && npm update -D"
   },
   "repository": {
     "type": "git",
