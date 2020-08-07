@@ -1,14 +1,13 @@
-import { mkdirSync } from "fs"
-import { execFileSync, execSync } from "child_process"
+import { execFileSync } from "child_process"
 import {resolve} from 'path'
 import { writeFsStamp, readFsStamp } from "./utils/fsstamp"
 import git from "./utils/git"
+import { initialize } from "./utils/preparation"
 
 const {values: $values} = Object
-, repoDir = "repo"
 , cwd = process.cwd()
 , scriptName = 'utils/stash_untracked'
-, repoFullDir = resolve(cwd, repoDir)
+, repoDir = resolve(cwd, "repo")
 , files = {
   committed: "committed",
   staged: {
@@ -69,13 +68,8 @@ const {values: $values} = Object
 
 describe('stash_untracked', () => {
   describe('processing', () => { 
-    beforeAll(() => {
-      execSync(`rm -rf ${repoDir}`)
-      mkdirSync(repoDir)
-      process.chdir(repoDir)
-
-      git.init()
-    })
+    beforeAll(() => initialize(repoDir))
+    afterAll(() => process.chdir(cwd))
 
     it('init', () => {
       writeFsStamp(fss.init)
@@ -116,7 +110,7 @@ describe('stash_untracked', () => {
 
     //TODO no untracked - no stash
     it(`./${scriptName}`, () => {
-      execFileSync(`../${scriptName}`, ["stash"], {cwd: repoFullDir})
+      execFileSync(`../${scriptName}`, ["stash"], {cwd: repoDir})
       git.commit('next')
       return expect(
         readFsStamp()
@@ -154,9 +148,6 @@ describe('stash_untracked', () => {
     })
 
 
-    afterAll(() => {
-      process.chdir(cwd)
-    })
   })
 
   describe('specs', () => {

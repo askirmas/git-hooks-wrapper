@@ -1,4 +1,7 @@
 import { execSync } from "child_process"
+import { prettyOut } from "./preparation"
+
+type falsy = false | undefined | null | 0 | ""
 
 const {keys: $keys} = Object
 , methods = {
@@ -23,9 +26,15 @@ const {keys: $keys} = Object
 
 export default git
 
-function wrap(cmd?: string) {
+function wrap(cmd_?: string | (falsy|string)[]) {
+  const cmd = !Array.isArray(cmd_)
+  ? cmd_
+  : cmd_.filter(Boolean).join(' ')
+
   return new Proxy(
-    !cmd ? [] : execSync(`git ${cmd}`).toString().split("\n").filter(x => x),
+    !cmd
+    ? []
+    : prettyOut(execSync(`git ${cmd}`)),
     handler
   ) as string[] & typeof methods
 }
@@ -34,12 +43,19 @@ function init() {
   return wrap('init')
 }
 
-function commit(message: string) {
-  return wrap(`commit -m ${bashStrEscape(message)}`)
+type CommitOptions = Partial<{
+  "noVerify": boolean
+}>
+function commit(message: string, {noVerify}: CommitOptions = {}) {
+  return wrap([
+    'commit',
+    noVerify && "--no-verify",
+    "-m", bashStrEscape(message)
+  ])
 }
 
 function add(pattern: string) {
-  return wrap(`add ${pattern}`)
+  return wrap(["add", pattern])
 }
 
 function status() {
@@ -71,7 +87,7 @@ function lsFiles(opts?: LsFilesOpts) {
 }
 
 function bashStrEscape(str: string|number) {
-  return `$\'${str.toString().replace("'", "\\'")}\'` 
+  return `$'${str.toString().replace("'", "\\'")}'` 
 }
 
 type Scalar = undefined|null|boolean|string|number
